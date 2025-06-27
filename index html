@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nonton Video</title>
+  <style>
+    body {
+      background-color: #000;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+    video {
+      width: 100%;
+      max-width: 720px;
+      margin-top: 20px;
+    }
+    .btn {
+      display: inline-block;
+      margin: 20px auto;
+      padding: 10px 20px;
+      background-color: #00aaff;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: bold;
+    }
+    .ads {
+      margin-top: 30px;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Silakan putar videonya</h2>
+
+  <video controls autoplay>
+    <source src="https://pixeldrain.com/api/file/7s7xbJuh" type="video/mp4" />
+    Browser kamu tidak mendukung video ini.
+  </video>
+
+  <div>
+    <a class="btn" href="https://s.shopee.co.id/40V5fLf1M8" target="_blank">Unduh Video</a>
+  </div>
+
+  <div class="ads">
+    <!-- Adsterra Script -->
+    <script type='text/javascript' src='//pl27020485.profitableratecpm.com/2f/99/f1/2f99f1d4032a0be7ef284975a711e85a.js'></script>
+    <script type='text/javascript' src='//pl27020505.profitableratecpm.com/a4/96/03/a49603fcef88d44a9250b7caaa8f8fe5.js'></script>
+  </div>
+
+</body>
+</html>
