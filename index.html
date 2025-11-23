@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cari Produk</title>
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    input { width: 100%; padding: 12px; margin-bottom: 20px; font-size: 16px; }
+    .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+    .item { border: 1px solid #ddd; border-radius: 10px; padding: 10px; cursor: pointer; }
+    .item img { width: 100%; border-radius: 10px; }
+    .id { font-size: 12px; color: #666; margin-top: 5px; }
+  </style>
+</head>
+
+<body>
+  <h2>Catalog Produk</h2>
+  <input id="search" type="text" placeholder="Cari nomor produk...">
+
+  <div class="grid" id="productGrid"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
