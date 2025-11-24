@@ -20,40 +20,9 @@
 
     <main class="product-grid-container">
         <div class="product-grid" id="dynamic-product-grid"> 
-            <!-- Area ini akan diisi oleh JavaScript dari Firebase -->
-        </div>
+            </div>
     </main>
     
-    <!-- 🔥 START: FIREBASE INTEGRATION 🔥 -->
-    
-    <!-- 1. Penautan Firebase SDK (Versi yang Kompatibel) -->
-    <!-- Ini harus diletakkan di atas kode konfigurasi -->
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
-
-    <!-- 2. Kunci Konfigurasi Anda (Sudah Diisi dengan Kunci RAHASIA Anda) -->
-    <script>
-      const firebaseConfig = {
-        apiKey: "AIzaSyBann9HAnX_Pbq52hllJUeTzeblFD0VWyE",
-        authDomain: "nesto-3cc0b.firebaseapp.com",
-        projectId: "nesto-3cc0b",
-        storageBucket: "nesto-3cc0b.firebasestorage.app",
-        messagingSenderId: "1076326275980",
-        appId: "1:1076326275980:web:cd28e72e1e6bfe95a514a9",
-        measurementId: "G-EN2XP8J1ZG" // Ini opsional, bisa dipertahankan
-      };
-
-      // 3. Inisialisasi Firebase
-      // PERHATIKAN: Kita menggunakan firebase.initializeApp() yang kompatibel
-      const app = firebase.initializeApp(firebaseConfig);
-      const db = app.firestore();
-      // Koleksi data utama Anda di Firestore
-      const productsCollection = db.collection("products"); 
-    </script>
-    <!-- 🔥 END: FIREBASE INTEGRATION 🔥 -->
-
-    <!-- Penautan script -->
-    <script src="script.js"></script>
-    <script src="admin_script.js"></script> 
+    <script src="script.js"></script> 
 </body>
 </html>
