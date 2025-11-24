@@ -3,63 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Katalog Produk Sederhana</title>
+    <title>Katalog Cepat & Keren</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css"> 
 </head>
 <body>
 
-    <header class="web-browser-header">
-        <div class="top-bar">
-            <span class="back-arrow">←</span>
-            <h1 class="page-title">Browser web</h1>
-        </div>
-
+    <header class="simple-header">
         <div class="search-bar">
             <input type="text" placeholder="Cari Link" class="search-input">
         </div>
-
-        <div class="promo-banner">
-            <p>Ketik nomor link-nya di pencarian 👇</p>
-            <p>cari produk sesuai nomor link yang ada di postingan psychooutfit</p>
-        </div>
-
-        <nav class="product-tabs">
-            <button class="tab-button active">NO LINK. 1001 - 1050</button>
-            <button class="tab-button">NO LINK. 1051 - 1100</button>
-        </nav>
-        
-        <div class="more-options">
-            <p>Lebih Banyak ⌄</p>
+        <div class="info-text">
+            ketik di kolom pencarian no produk yang sesuai dengan postingan
         </div>
     </header>
 
     <main class="product-grid-container">
         <div class="product-grid">
 
-            <div class="product-item">
-                <img src="path/to/product_image_1.jpg" alt="AccentAmbios T-Shirt" class="product-image">
-                <div class="product-info">
-                    <p class="product-code">1020.</p>
-                    <p class="product-name">AccentAmbios 16s Heavyweight Troop Black T-Shirt</p>
-                </div>
+            <div class="product-item" data-product-number="1">
+                <a href="https://link.afiliasi.anda/produk1" target="_blank" class="product-link">
+                    <div class="product-number">1</div>
+                    <img src="images/produk_1_kaos.jpg" alt="Foto Produk 1" class="product-image-placeholder">
+                    <div class="click-button">
+                        <span class="button-text">KLIK DISINI</span>
+                    </div>
+                </a>
             </div>
-
-            <div class="product-item">
-                <img src="path/to/product_image_2.jpg" alt="Himside Sweatpants" class="product-image">
-                <div class="product-info">
-                    <p class="product-code">1020.</p>
-                    <p class="product-name">Himside - Superior Black Sweatpants Baggy - Unisex</p>
-                </div>
+            <div class="product-item" data-product-number="2">
+                <a href="https://link.afiliasi.anda/produk2" target="_blank" class="product-link">
+                    <div class="product-number">2</div>
+                    <img src="images/produk_2_celana.jpg" alt="Foto Produk 2" class="product-image-placeholder">
+                    <div class="click-button">
+                        <span class="button-text">KLIK DISINI</span>
+                    </div>
+                </a>
             </div>
-
-            <div class="product-item">
-                <img src="path/to/product_image_3.jpg" alt="Better Days Ahead T-Shirt" class="product-image">
-                <div class="product-info">
-                    <p class="product-code">1020.</p>
-                    <p class="product-name">PEARCE CLUB Kaos Boxy Pria dan Wanita - Better D</p>
-                </div>
+            <div class="product-item" data-product-number="3">
+                <a href="https://link.afiliasi.anda/produk3" target="_blank" class="product-link">
+                    <div class="product-number">3</div>
+                    <img src="images/produk_3_jaket.jpg" alt="Foto Produk 3" class="product-image-placeholder">
+                    <div class="click-button">
+                        <span class="button-text">KLIK DISINI</span>
+                    </div>
+                </a>
             </div>
-
+            <div class="product-item" data-product-number="4">
+                <a href="https://LINK_AFILIASI_ANDA_DI_SINI" target="_blank" class="product-link">
+                    <div class="product-number">4</div>
+                    <img src="PATH/KE/FOTO/PRODUK_4.jpg" alt="Foto Produk 4" class="product-image-placeholder">
+                    <div class="click-button">
+                        <span class="button-text">KLIK DISINI</span>
+                    </div>
+                </a>
+            </div>
             </div>
     </main>
     
