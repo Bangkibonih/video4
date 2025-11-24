@@ -1,111 +1,161 @@
+/* Atur ulang (reset) gaya bawaan browser */
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    /* Ganti font-family ke Poppins atau font modern pilihan Anda */
-    font-family: 'Poppins', sans-serif; 
+    font-family: 'Poppins', sans-serif; /* Tetap gunakan font modern */
 }
 
 body {
-    background-color: #f7f7f7; /* Latar belakang abu-abu sangat muda */
-    padding: 15px;
+    background-color: #f0f2f5; /* Latar belakang abu-abu terang yang bersih */
+    padding: 15px 10px; /* Padding sedikit lebih banyak di samping */
 }
 
 /* --- Header & Pencarian Styling --- */
+.simple-header {
+    background-color: white; /* Latar belakang header putih */
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 12px; /* Sudut membulat pada header */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); /* Bayangan lembut pada header */
+}
+
+.search-bar {
+    margin-bottom: 10px;
+}
+
 .search-input {
-    /* Gaya modern: border lembut, warna abu-abu gelap */
     width: 100%;
     padding: 12px 20px;
-    border: 2px solid #e0e0e0;
-    border-radius: 10px; /* Sudut sedikit lebih tumpul */
+    border: 1px solid #ddd; /* Border abu-abu yang lebih lembut */
+    border-radius: 25px; /* Lebih membulat */
     outline: none;
     font-size: 16px;
-    margin-bottom: 10px;
-    transition: border-color 0.3s;
+    background-color: #fcfcfc; /* Latar belakang input sedikit putih keabu-abuan */
+    transition: border-color 0.3s, box-shadow 0.3s;
 }
 
 .search-input:focus {
-    border-color: #5d3fd3; /* Border berubah warna saat diketik (Purple/Indigo Vibe) */
+    border-color: #a0a0a0; /* Border abu-abu yang lebih gelap saat fokus */
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1); /* Bayangan tipis saat fokus */
 }
 
 .info-text {
-    background-color: #e8e6f1; /* Warna latar belakang ungu muda/lavender */
-    color: #5d3fd3; /* Warna teks ungu gelap */
-    padding: 10px 15px;
-    border-radius: 10px;
-    font-weight: 600; /* Sedikit tebal */
-    margin-bottom: 20px;
+    text-align: center;
+    font-size: 14px;
+    color: #555;
+    padding: 10px 18px;
+    background-color: #e9ebee; /* Latar belakang abu-abu yang mirip gambar awal */
+    border-radius: 25px; /* Lebih membulat */
+    font-weight: 500;
 }
 
-/* --- Grid Produk Styling (Kunci Responsif) --- */
+/* --- Grid Produk Styling --- */
+.product-grid-container {
+    padding: 5px; /* Jarak dari tepi layar */
+}
 
 .product-grid {
     display: grid;
-    gap: 15px; 
-    
-    /* 🔑 Kunci Responsif: Otomatis menyesuaikan kolom */
-    /* Membuat kolom minimum 150px lebar per item */
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px; /* Jarak antar item */
+    /* Kunci Responsif: Otomatis menyesuaikan kolom (tetap sama) */
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); /* Min lebar 160px */
 }
 
 .product-item {
     background-color: white;
     position: relative; 
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08); /* Bayangan lebih dalam */
-    border-radius: 12px; /* Sudut sangat membulat */
+    /* 🔥 Efek 3D Mengambang: Bayangan lebih kuat */
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12); /* Bayangan awal yang lebih kuat */
+    border-radius: 15px; /* Sudut lebih membulat */
     overflow: hidden;
-    transition: transform 0.3s, box-shadow 0.3s;
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Transisi halus untuk efek hover */
 }
 
-/* 🚨 Efek Hover Keren (Untuk pengguna laptop/mouse) */
+/* 🔥 Efek Hover Keren (Untuk pengguna laptop/mouse) */
 .product-item:hover {
-    transform: translateY(-5px); /* Item sedikit terangkat */
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15); /* Bayangan lebih kuat */
+    transform: translateY(-8px); /* Item terangkat lebih tinggi */
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2); /* Bayangan lebih gelap dan menyebar */
+}
+
+.product-link {
+    display: block; 
+    text-decoration: none;
+    color: inherit;
 }
 
 .product-image-placeholder {
     width: 100%;
-    aspect-ratio: 1 / 1.5; 
-    background-color: #f0f0f0; 
+    aspect-ratio: 1 / 1.4; /* Rasio potret yang lebih standar */
+    background-color: #e8e8e8; /* Latar belakang abu-abu terang untuk placeholder */
+    color: #a0a0a0; /* Warna teks placeholder */
+    font-size: 16px;
+    display: flex; /* Menggunakan flexbox untuk teks di tengah vertikal/horizontal */
+    justify-content: center;
+    align-items: center;
+    text-align: center;
     object-fit: cover;
-    display: block;
-    border-radius: 12px 12px 0 0; /* Sudut membulat di atas */
 }
 
 /* Nomor Produk */
 .product-number {
+    position: absolute;
     top: 15px;
     left: 15px;
-    background-color: #5d3fd3; /* Warna ungu/indigo */
-    color: white;
-    width: 35px;
-    height: 35px;
+    background-color: white; /* Lingkaran putih */
+    color: #333; /* Warna teks hitam gelap */
+    width: 38px; /* Ukuran sedikit lebih besar */
+    height: 38px;
+    border-radius: 50%; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
     font-weight: 700;
+    font-size: 18px; /* Font size sedikit lebih besar */
     z-index: 10;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); /* Bayangan lembut untuk nomor */
 }
 
 /* Tombol KLIK DISINI */
 .click-button {
-    background-color: white;
-    color: #5d3fd3; /* Warna teks ungu */
-    font-size: 14px;
-    font-weight: 700;
+    background-color: #f7f7f7; /* Latar belakang tombol sedikit abu-abu */
+    color: #444; /* Warna teks hitam gelap */
+    text-align: center;
     padding: 10px 0;
+    font-size: 14px;
+    font-weight: 600;
     display: flex;
     justify-content: center;
     align-items: center;
+    border-top: 1px solid #eee; /* Garis pemisah tipis */
+    transition: background-color 0.3s, color 0.3s;
 }
 
-/* Efek Tombol: Panah */
+/* 🔥 Efek Hover Tombol */
+.product-item:hover .click-button {
+    background-color: #e0e0e0; /* Tombol sedikit lebih gelap saat hover */
+}
+
 .click-button:after {
-    content: "→"; /* Ganti panah ke gaya lebih modern */
-    margin-left: 8px;
+    content: "→"; 
+    margin-left: 10px;
     font-size: 16px;
-    transition: transform 0.3s;
+    transition: transform 0.3s ease;
 }
 
-/* 🚨 Efek Hover Tombol */
+/* 🔥 Efek Hover Tombol Panah */
 .product-item:hover .click-button:after {
-    transform: translateX(5px); /* Panah bergerak sedikit ke kanan */
+    transform: translateX(5px); 
+}
+
+/* Teks "foto produk" di tengah placeholder jika tidak ada gambar */
+/* Ini hanya untuk visualisasi jika Anda belum mengisi 'src' pada img tag */
+.product-image-placeholder[src*="placeholder.com"] {
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%"><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="Arial" font-size="18" fill="%23a0a0a0">foto produk</text></svg>');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 80% auto; /* Sesuaikan ukuran teks */
+    /* Hapus teks asli dari HTML jika placeholder SVG digunakan */
+    text-indent: -9999px; 
+    line-height: 0; /* Hindari garis ekstra */
 }
