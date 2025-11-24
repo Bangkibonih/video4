@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Halaman Admin Katalog</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* CSS Khusus Halaman Admin */
+        body { font-family: 'Poppins', sans-serif; padding: 20px; background-color: #f0f2f5; }
+        .container { max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h2 { border-bottom: 2px solid #ddd; padding-bottom: 10px; margin-bottom: 20px; color: #333; }
+        label { display: block; margin-bottom: 5px; font-weight: 600; }
+        input[type="text"], input[type="number"] { width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
+        button { padding: 10px 20px; background-color: #5d3fd3; color: white; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s; }
+        button:hover { background-color: #4a30a8; }
+        #message { margin-top: 20px; padding: 10px; border-radius: 5px; }
+        #product-list-preview { margin-top: 30px; border-top: 1px solid #eee; padding-top: 15px; }
+        .product-preview-item { background: #f9f9f9; padding: 10px; margin-bottom: 8px; border-radius: 5px; display: flex; justify-content: space-between; align-items: center; }
+        .product-preview-item button { margin-left: 10px; padding: 5px 10px; background-color: #dc3545; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Kontrol Panel Produk</h2>
+
+        <form id="product-form">
+            <label for="productNo">Nomor Produk (Unik):</label>
+            <input type="number" id="productNo" required>
+
+            <label for="productLink">Link Afiliasi/Produk (URL):</label>
+            <input type="text" id="productLink" required>
+            
+            <label for="productImage">Link/URL Gambar Produk:</label>
+            <input type="text" id="productImage" required placeholder="Contoh: images/produk_26.jpg">
+
+            <button type="submit">Tambah Produk</button>
+        </form>
+
+        <div id="message"></div>
+
+        <h3>Daftar Produk Saat Ini</h3>
+        <div id="product-list-preview"></div>
+    </div>
+
+    <script src="admin_script.js"></script> 
+</body>
+</html>
