@@ -23,6 +23,27 @@
             </div>
     </main>
     
-    <script src="script.js"></script> 
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+
+    <script>
+      // GANTI SELURUH BLOK DI BAWAH INI DENGAN KODE firebaseConfig YANG SUDAH ANDA SALIN
+      const firebaseConfig = {
+        apiKey: "AIzaSyBann9HAnX_Pbq52hllJUeTzeblFD0VWyE",
+        authDomain: "nesto-3cc0b.firebaseapp.com",
+        projectId: "nesto-3cc0b",
+        storageBucket: "nesto-3cc0b.firebasestorage.app",
+        messagingSenderId: "1076326275980",
+        appId: "1:1076326275980:web:cd28e72e1e6bfe95a514a9"
+      };
+
+      // 3. Inisialisasi Firebase
+      const app = firebase.initializeApp(firebaseConfig);
+      const db = app.firestore();
+      // Koleksi data utama Anda di Firestore
+      const productsCollection = db.collection("products"); 
+    </script>
+    <script src="script.js"></script>
+    <script src="admin_script.js"></script> 
 </body>
 </html>
