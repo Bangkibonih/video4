@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // 1. Ambil elemen yang diperlukan
     const searchInput = document.querySelector('.search-input');
     const productGrid = document.getElementById('dynamic-product-grid');
 
@@ -6,12 +7,12 @@ document.addEventListener('DOMContentLoaded', function() {
     // A. FUNGSI MEMUAT & MENAMPILKAN DATA DARI ADMIN PANEL
     // -----------------------------------------------------
     const loadAndRenderProducts = () => {
-        // 1. Ambil data dari localStorage (dari Admin Panel)
         const products = JSON.parse(localStorage.getItem('productData')) || [];
-        productGrid.innerHTML = ''; // Kosongkan grid
+        productGrid.innerHTML = ''; 
 
-        // 2. Urutkan berdasarkan Nomor dan buat elemen HTML
+        // Urutkan berdasarkan Nomor dan buat elemen HTML
         products.sort((a, b) => a.no - b.no).forEach(product => {
+            // PASTIKAN SEMUA VARIABEL (product.link, product.image) ADA
             const productHtml = `
                 <div class="product-item" data-product-number="${product.no}">
                     <a href="${product.link}" target="_blank" class="product-link">
@@ -23,11 +24,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     </a>
                 </div>
             `;
-            // Menambahkan elemen ke grid
             productGrid.innerHTML += productHtml;
         });
         
-        // 3. Kembalikan daftar item untuk digunakan oleh fungsi pencarian
+        // Kembalikan daftar item untuk digunakan oleh fungsi pencarian
         return document.querySelectorAll('.product-item');
     };
 
@@ -36,23 +36,26 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
     // -----------------------------------------------------
-    // B. FUNGSI PENCARIAN (Filtering) - LOGIKA TETAP SAMA
+    // B. FUNGSI PENCARIAN (Filtering)
     // -----------------------------------------------------
-    searchInput.addEventListener('input', function(e) {
-        const searchTerm = e.target.value.trim().toLowerCase();
-        
-        // Ambil ulang daftar item (diperlukan karena item di-render secara dinamis)
-        productItems = document.querySelectorAll('.product-item');
+    // Pastikan searchInput ada sebelum ditambahkan event listener
+    if (searchInput) { 
+        searchInput.addEventListener('input', function(e) {
+            const searchTerm = e.target.value.trim().toLowerCase();
+            
+            // Ambil ulang daftar item
+            productItems = document.querySelectorAll('.product-item');
 
-        productItems.forEach(item => {
-            const productNumber = item.getAttribute('data-product-number');
-            const isMatch = productNumber && productNumber.includes(searchTerm);
+            productItems.forEach(item => {
+                const productNumber = item.getAttribute('data-product-number');
+                const isMatch = productNumber && productNumber.includes(searchTerm);
 
-            if (searchTerm === '' || isMatch) {
-                item.style.display = 'block'; 
-            } else {
-                item.style.display = 'none';
-            }
+                if (searchTerm === '' || isMatch) {
+                    item.style.display = 'block'; 
+                } else {
+                    item.style.display = 'none';
+                }
+            });
         });
-    });
+    }
 });
