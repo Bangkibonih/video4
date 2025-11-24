@@ -1,22 +1,18 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Cek apakah inisialisasi Firebase berhasil dari index.html
-    if (typeof productsCollection === 'undefined') {
-        console.error("Firebase is not initialized. Dynamic rendering disabled.");
-        return; 
-    }
-
+    // 1. Ambil elemen yang diperlukan
     const searchInput = document.querySelector('.search-input');
     const productGrid = document.getElementById('dynamic-product-grid');
-    let productItems = []; // Untuk menyimpan elemen produk untuk pencarian
 
     // -----------------------------------------------------
-    // A. FUNGSI MENAMPILKAN DATA DARI FIREBASE
+    // A. FUNGSI MEMUAT & MENAMPILKAN DATA DARI ADMIN PANEL
     // -----------------------------------------------------
-    const renderProducts = (products) => {
+    const loadAndRenderProducts = () => {
+        const products = JSON.parse(localStorage.getItem('productData')) || [];
         productGrid.innerHTML = ''; 
-        
-        // Urutkan berdasarkan nomor produk
+
+        // Urutkan berdasarkan Nomor dan buat elemen HTML
         products.sort((a, b) => a.no - b.no).forEach(product => {
+            // PASTIKAN SEMUA VARIABEL (product.link, product.image) ADA
             const productHtml = `
                 <div class="product-item" data-product-number="${product.no}">
                     <a href="${product.link}" target="_blank" class="product-link">
@@ -30,28 +26,26 @@ document.addEventListener('DOMContentLoaded', function() {
             `;
             productGrid.innerHTML += productHtml;
         });
-
-        // Update list of product items for search function
-        productItems = document.querySelectorAll('.product-item');
+        
+        // Kembalikan daftar item untuk digunakan oleh fungsi pencarian
+        return document.querySelectorAll('.product-item');
     };
 
-    // -----------------------------------------------------
-    // B. MENDENGARKAN PERUBAHAN DATA (REALTIME LISTENER)
-    // -----------------------------------------------------
-    // Ini adalah inti dari Firebase: setiap ada perubahan, data langsung dimuat ulang
-    productsCollection.onSnapshot(snapshot => {
-        const products = snapshot.docs.map(doc => doc.data());
-        renderProducts(products);
-    });
+    // Muat dan tampilkan produk saat halaman dimuat
+    let productItems = loadAndRenderProducts();
 
 
     // -----------------------------------------------------
-    // C. FUNGSI PENCARIAN (Filtering)
+    // B. FUNGSI PENCARIAN (Filtering)
     // -----------------------------------------------------
-    if (searchInput) {
+    // Pastikan searchInput ada sebelum ditambahkan event listener
+    if (searchInput) { 
         searchInput.addEventListener('input', function(e) {
             const searchTerm = e.target.value.trim().toLowerCase();
             
+            // Ambil ulang daftar item
+            productItems = document.querySelectorAll('.product-item');
+
             productItems.forEach(item => {
                 const productNumber = item.getAttribute('data-product-number');
                 const isMatch = productNumber && productNumber.includes(searchTerm);
