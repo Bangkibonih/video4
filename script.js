@@ -1,39 +1,34 @@
 document.addEventListener('DOMContentLoaded', function() {
     
-    // Ambil elemen kolom pencarian
+    // 1. Ambil elemen kolom pencarian
     const searchInput = document.querySelector('.search-input');
     
-    // Ambil SEMUA item produk
+    // 2. Ambil SEMUA item produk
     const productItems = document.querySelectorAll('.product-item');
 
-    // Dengarkan event 'input' (ketika teks di kolom pencarian berubah)
+    // 3. Dengarkan event 'input' (berubah setiap kali ada ketikan)
     searchInput.addEventListener('input', function(e) {
-        // Ambil nilai input dan ubah ke huruf kecil
-        const searchTerm = e.target.value.toLowerCase();
+        // Ambil nilai input, hapus spasi di awal/akhir (trim), dan ubah ke huruf kecil
+        const searchTerm = e.target.value.trim().toLowerCase();
 
-        // Ulangi semua item produk
+        // 4. Ulangi semua item produk
         productItems.forEach(item => {
-            // Ambil nama produk dan kode produk (diubah ke huruf kecil)
-            const productName = item.querySelector('.product-name').textContent.toLowerCase();
-            const productCode = item.querySelector('.product-code').textContent.toLowerCase();
+            // 🔥 SOLUSI: Ambil NOMOR PRODUK dari atribut data-product-number
+            const productNumber = item.getAttribute('data-product-number');
+            
+            // Cek apakah nomor produk mengandung kata kunci yang diketik
+            // Contoh: Mencari '2' akan menampilkan 2, 12, 20, 25, dll.
+            const isMatch = productNumber && productNumber.includes(searchTerm);
 
-            // Cek apakah ada kecocokan (match) dengan kata kunci
-            const isMatch = productName.includes(searchTerm) || productCode.includes(searchTerm);
-
-            // Tampilkan/Sembunyikan Item
-            if (isMatch) {
-                // Tampilkan item (menggunakan 'block' karena grid akan menyesuaikan)
+            // 5. Tampilkan/Sembunyikan Item
+            // Jika kolom pencarian kosong ATAU ada kecocokan, tampilkan item
+            if (searchTerm === '' || isMatch) {
+                // Tampilkan item
                 item.style.display = 'block'; 
             } else {
                 // Sembunyikan item
                 item.style.display = 'none';
             }
         });
-        
-        // Catatan: Anda mungkin perlu menambahkan logika untuk mengatur ulang tata letak grid 
-        // setelah elemen disembunyikan. CSS Grid (seperti yang kita gunakan) akan menanganinya secara otomatis.
     });
-    
-    // --- (Di sini Anda bisa menambahkan kode untuk Tab Navigasi) ---
-    // ...
 });
