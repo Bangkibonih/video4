@@ -1,4 +1,4 @@
-/* Atur ulang (reset) gaya bawaan browser */
+/* Reset gaya bawaan browser */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -6,18 +6,20 @@
     font-family: 'Poppins', sans-serif; 
 }
 
+/* ==== BACKGROUND PREMIUM DARK GREY GRADIENT ==== */
 body {
-    background-color: #1D1F21; /* DARK CHARCOAL */
+    background: radial-gradient(circle at 50% 20%, #3a3a3a 0%, #1D1F21 60%, #171819 100%);
     padding: 15px 10px;
+    background-attachment: fixed;
 }
 
 /* Branding Title */
 .branding-title {
     text-align: center;
-    color: #B9B9B9; /* soft grey */
+    color: #B9B9B9;
     font-size: 14px;
-    font-weight: 300; /* tipis elegan */
-    letter-spacing: 3px; 
+    font-weight: 300;
+    letter-spacing: 3px;
     margin-bottom: 20px;
     margin-top: 5px;
     text-transform: uppercase;
