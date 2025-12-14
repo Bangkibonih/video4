@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Realisme Prompt Builder</title>
+    <style>
+        /* --- GAYA TAMPILAN (CSS) --- */
+        body { font-family: 'Segoe UI', sans-serif; background-color: #121212; color: #e0e0e0; margin: 0; padding: 20px; padding-bottom: 150px; }
+        h1 { text-align: center; color: #4CAF50; letter-spacing: 2px; }
+        h2 { color: #fff; border-left: 5px solid #4CAF50; padding-left: 10px; margin-top: 40px; font-size: 1.2rem; }
+        p.subtitle { color: #aaa; font-size: 0.9rem; margin-bottom: 10px; }
+
+        /* Area Geser (Carousel) */
+        .scroll-container {
+            display: flex;
+            overflow-x: auto;
+            gap: 15px;
+            padding: 10px 0 20px 0;
+            scrollbar-width: thin; 
+            scrollbar-color: #4CAF50 #222;
+        }
+        
+        /* Kartu Pilihan */
+        .card {
+            min-width: 140px;
+            max-width: 140px;
+            background: #1e1e1e;
+            border-radius: 12px;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            border: 2px solid #333;
+            transition: transform 0.2s, border-color 0.2s;
+            position: relative;
+        }
+        
+        .card:hover { transform: translateY(-5px); border-color: #666; }
+        
+        /* Jika Dipilih */
+        .card.selected { 
+            border-color: #4CAF50; 
+            background: #252525; 
+            box-shadow: 0 0 15px rgba(76, 175, 80, 0.3);
+        }
+        
+        /* Tanda Centang Hijau */
+        .card.selected::after {
+            content: "✔";
+            position: absolute;
+            top: 5px; right: 5px;
+            background: #4CAF50; color: white;
+            border-radius: 50%; width: 20px; height: 20px;
+            font-size: 12px; line-height: 20px;
+        }
+
+        .card img {
+            width: 100%; height: 120px; object-fit: cover;
+            border-radius: 8px; margin-bottom: 8px; background-color: #333;
+        }
+        
+        .card-title { font-weight: bold; font-size: 13px; color: #fff; line-height: 1.4; }
+        .card-desc { font-size: 10px; color: #888; margin-top: 4px; }
+
+        /* Kotak Hasil (Sticky di Bawah) */
+        .result-box {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: #1a1a1a; padding: 15px 20px;
+            border-top: 2px solid #4CAF50;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.5);
+            z-index: 100;
+        }
+        .result-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        textarea {
+            width: 100%; height: 70px;
+            background: #000; color: #0f0;
+            border: 1px solid #333; padding: 10px;
+            font-family: monospace; font-size: 12px; border-radius: 5px;
+            resize: none;
+        }
+        button {
+            background: #4CAF50; color: white; border: none;
+            padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold;
+        }
+        button:hover { background: #45a049; }
+    </style>
+</head>
+<body>
+
+    <h1>📸 REALISM PROMPT BUILDER</h1>
+    <div style="text-align: center; color: #666; font-size: 12px;">Created by Master Prompter</div>
+
+    <h2>1. Subjek & Tekstur Utama</h2>
+    <p class="subtitle">Siapa yang mau kamu gambar?</p>
+    <div class="scroll-container" id="cat-subjek">
+        
+        <div class="card" onclick="pilihItem('subjek', 'A close-up portrait of an elderly fisherman, deep wrinkles, weathered skin', this)">
+            <img src="https://via.placeholder.com/150/gray/fff?text=Nelayan+Tua" alt="Nelayan">
+            <div class="card-title">Nelayan Tua</div>
+            <div class="card-desc">Kerutan dalam, kulit kasar.</div>
+        </div>
+
+        <div class="card" onclick="pilihItem('subjek', 'A beautiful woman with freckles, natural skin texture, pore details', this)">
+            <img src="https://via.placeholder.com/150/pink/fff?text=Wanita+Muda" alt="Wanita">
+            <div class="card-title">Wanita Natural</div>
+            <div class="card-desc">Pori-pori, bintik wajah.</div>
+        </div>
+
+        <div class="card" onclick="pilihItem('subjek', 'A rusty cyberpunk robot, peeling paint, metallic texture', this)">
+            <img src="https://via.placeholder.com/150/black/fff?text=Robot+Karat" alt="Robot">
+            <div class="card-title">Robot Berkarat</div>
+            <div class="card-desc">Cat terkelupas, besi tua.</div>
+        </div>
+
+        </div>
+
+
+    <h2>2. Komposisi & Framing</h2>
+    <p class="subtitle">Seberapa dekat kameranya?</p>
+    <div class="scroll-container">
+        
+        <div class="card" onclick="pilihItem('framing', 'extreme close-up macro shot, focus on eyes', this)">
+            <img src="https://via.placeholder.com/150/000/fff?text=Macro+Eye" alt="Macro">
+            <div class="card-title">Macro Mata</div>
+            <div class="card-desc">Sangat dekat, detail iris.</div>
+        </div>
+
+        <div class="card" onclick="pilihItem('framing', 'close-up portrait, shallow depth of field', this)">
+            <img src="https://via.placeholder.com/150/333/fff?text=Portrait" alt="Portrait">
+            <div class="card-title">Portrait Wajah</div>
+            <div class="card-desc">Bahu ke atas, background blur.</div>
+        </div>
+
+        <div class="card" onclick="pilihItem('framing', 'full body shot, wide angle, environmental context', this)">
+            <img src="https://via.placeholder.com/150/555/fff?text=Full+Body" alt="Full Body">
+            <div class="card-title">Full Body</div>
+            <div class="card-desc">Terlihat seluruh badan & lokasi.</div>
+        </div>
+
+    </div>
+
+
+    <h2>3. Tipe Kamera & Lensa</h2>
+    <p class="subtitle">Pilih alat tempurmu.</p>
+    <div class="scroll-container">
+        
+        <div class="card" onclick="pilihItem('kamera', 'shot on iPhone 15 Pro Max, vibrant colors, computational photography', this)">
+            <img src="https://via.placeholder.com/150/green/fff?text=iPhone+15" alt="iPhone">
+            <div class="card-title">iPhone 15 Pro</div>
+            <div class="card-desc">Warna tajam, modern, kontras.</div>
+        </div>
+
+        <div class="card" onclick="pilihItem('kamera', 'shot on Sony A7R V, 85mm f/1.4 GM lens, extremely sharp', this)">
+            <img src="https://via.placeholder.com/150/blue/fff?text=Sony+Alpha" alt="Sony">
+            <div class="card-title">Sony Alpha (Sharp)</div>
+            <div class="card-desc">Sangat tajam, digital look.</div>
+        </div>
+
+        <div class="card" onclick="pilihItem('kamera', 'shot on Hasselblad H6D, 120mm macro, medium format, hyper-detailed', this)">
+            <img src="https://via.placeholder.com/150/red/fff?text=Hasselblad" alt="Hasselblad">
+            <div class="card-title">Hasselblad (Pro)</div>
+            <div class="card-desc">Detail tekstur kulit maksimal.</div>
+        </div>
+
+        <div class="card" onclick="pilihItem('kamera', 'shot on Kodak Portra 400, 35mm film, vintage grain', this)">
+            <img src="https://via.placeholder.com/150/orange/fff?text=Analog+Film" alt="Film">
+            <div class="card-title">Analog Film</div>
+            <div class="card-desc">Butiran film, warna nostalgia.</div>
+        </div>
+
+    </div>
+
+
+    <h2>4. Pencahayaan (Lighting)</h2>
+    <p class="subtitle">Tentukan suasananya.</p>
+    <div class="scroll-container">
+        
+        <div class="card" onclick="pilihItem('cahaya', 'dramatic cinematic lighting, high contrast, rim light', this)">
+            <img src="https://via.placeholder.com/150/000000/fff?text=Cinematic" alt="Cinematic">
+            <div class="card-title">Cinematic Dark</div>
+            <div class="card-desc">Gelap, dramatis, kontras tinggi.</div>
+        </div>
+
+        <div class="card" onclick="pilihItem('cahaya', 'soft studio lighting, diffused light, bright atmosphere', this)">
+            <img src="https://via.placeholder.com/150/eeeeee/000?text=Soft+Studio" alt="Soft">
+            <div class="card-title">Soft Studio</div>
+            <div class="card-desc">Terang, lembut, tanpa bayangan.</div>
+        </div>
+
+        <div class="card" onclick="pilihItem('cahaya', 'golden hour sunlight, warm tones, sun flare', this)">
+            <img src="https://via.placeholder.com/150/ffcc00/000?text=Golden+Hour" alt="Golden">
+            <div class="card-title">Golden Hour</div>
+            <div class="card-desc">Sore hari, hangat, matahari.</div>
+        </div>
+
+    </div>
+
+    <div class="result-box">
+        <div class="result-header">
+            <span>✨ HASIL PROMPT:</span>
+            <button onclick="copyPrompt()">Salin Teks</button>
+        </div>
+        <textarea id="hasilPrompt" readonly>Silakan pilih gambar di atas...</textarea>
+    </div>
+
+    <script>
+        // Data Penampung Pilihan
+        let data = {
+            subjek: "",
+            framing: "",
+            kamera: "",
+            cahaya: ""
+        };
+
+        // Fungsi saat kartu diklik
+        function pilihItem(kategori, promptTeks, elemen) {
+            // 1. Simpan Data
+            data[kategori] = promptTeks;
+
+            // 2. Atur Visual (Hapus centang lama di baris yg sama)
+            let parent = elemen.parentElement;
+            let siblings = parent.getElementsByClassName('card');
+            for (let item of siblings) {
+                item.classList.remove('selected');
+            }
+            // 3. Centang yang baru
+            elemen.classList.add('selected');
+
+            // 4. Update Teks
+            generatePrompt();
+        }
+
+        // Fungsi menggabungkan semua kata
+        function generatePrompt() {
+            let p = data; // Singkatan biar pendek
+            let hasil = "";
+
+            // Gabungin Logika Blueprint
+            if (p.subjek) hasil += p.subjek + ", ";
+            if (p.framing) hasil += p.framing + ", ";
+            if (p.kamera) hasil += p.kamera + ", ";
+            if (p.cahaya) hasil += p.cahaya + ", ";
+            
+            // Tambahan Wajib (Blueprint Kualitas & Negative Otomatis)
+            if (hasil.length > 5) {
+                hasil += "8k resolution, photorealistic, masterpiece, raw photo.";
+                hasil += " --no cartoon, drawing, illustration, low quality, blurry.";
+            } else {
+                hasil = "Silakan pilih gambar di atas untuk memulai...";
+            }
+
+            document.getElementById('hasilPrompt').value = hasil;
+        }
+
+        // Fungsi tombol salin
+        function copyPrompt() {
+            let teks = document.getElementById('hasilPrompt');
+            teks.select();
+            document.execCommand("copy");
+            alert("Prompt berhasil disalin! Tinggal paste ke AI.");
+        }
+    </script>
+
+</body>
+</html>
