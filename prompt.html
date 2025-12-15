@@ -3,263 +3,385 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Master Realisme Prompt Builder</title>
+    <title>Visual Prompt Library</title>
     <style>
-        /* --- GAYA TAMPILAN (CSS) --- */
-        body { font-family: 'Segoe UI', sans-serif; background-color: #121212; color: #e0e0e0; margin: 0; padding: 20px; padding-bottom: 150px; }
-        h1 { text-align: center; color: #4CAF50; letter-spacing: 2px; }
-        h2 { color: #fff; border-left: 5px solid #4CAF50; padding-left: 10px; margin-top: 40px; font-size: 1.2rem; }
-        p.subtitle { color: #aaa; font-size: 0.9rem; margin-bottom: 10px; }
-
-        /* Area Geser (Carousel) */
-        .scroll-container {
+        /* --- 1. SETUP TAMPILAN BERSIH --- */
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, Helvetica, sans-serif; }
+        
+        body {
+            background-color: #f8f9fa;
             display: flex;
-            overflow-x: auto;
-            gap: 15px;
-            padding: 10px 0 20px 0;
-            scrollbar-width: thin; 
-            scrollbar-color: #4CAF50 #222;
+            justify-content: center;
+            padding: 40px 20px;
+            min-height: 100vh;
+            color: #212529;
         }
-        
-        /* Kartu Pilihan */
-        .card {
-            min-width: 140px;
-            max-width: 140px;
-            background: #1e1e1e;
+
+        .container {
+            background: white;
+            width: 100%;
+            max-width: 1000px; /* Lebar biar muat banyak gambar */
             border-radius: 12px;
-            padding: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- 2. HEADER PROFIL --- */
+        .profile-section {
+            background: white;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border-bottom: 1px solid #dee2e6;
             text-align: center;
+        }
+
+        .avatar-box {
+            width: 120px; height: 120px;
+            border-radius: 50%; overflow: hidden;
+            margin-bottom: 15px;
+            border: 4px solid #fff;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            background: #e9ecef;
+        }
+        .avatar-box img { width: 100%; height: 100%; object-fit: cover; }
+
+        .user-name { font-size: 1.8rem; font-weight: 800; color: #212529; margin-bottom: 5px; }
+        .user-desc { font-size: 1rem; color: #6c757d; max-width: 500px; }
+
+        /* --- 3. AREA VISUAL LIBRARY --- */
+        .library-area { padding: 40px; }
+
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e9ecef;
+            color: #495057;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* GRID GAMBAR */
+        .visual-grid {
+            display: grid;
+            /* Grid responsif: otomatis ngatur jumlah kolom sesuai lebar layar */
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); 
+            gap: 15px;
+            margin-bottom: 50px;
+        }
+
+        .card {
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            overflow: hidden;
             cursor: pointer;
-            border: 2px solid #333;
-            transition: transform 0.2s, border-color 0.2s;
-            position: relative;
-        }
-        
-        .card:hover { transform: translateY(-5px); border-color: #666; }
-        
-        /* Jika Dipilih */
-        .card.selected { 
-            border-color: #4CAF50; 
-            background: #252525; 
-            box-shadow: 0 0 15px rgba(76, 175, 80, 0.3);
-        }
-        
-        /* Tanda Centang Hijau */
-        .card.selected::after {
-            content: "✔";
-            position: absolute;
-            top: 5px; right: 5px;
-            background: #4CAF50; color: white;
-            border-radius: 50%; width: 20px; height: 20px;
-            font-size: 12px; line-height: 20px;
+            transition: all 0.2s;
+            background: #fff;
         }
 
-        .card img {
-            width: 100%; height: 120px; object-fit: cover;
-            border-radius: 8px; margin-bottom: 8px; background-color: #333;
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            border-color: #adb5bd;
+        }
+
+        .card.active {
+            border: 2px solid #0d6efd;
+            background-color: #e7f1ff;
+        }
+
+        /* BAGIAN FOTO */
+        .card-img {
+            width: 100%;
+            height: 140px; /* Tinggi foto seragam */
+            background-color: #ced4da; /* Warna abu buat placeholder */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6c757d;
+            font-size: 0.8rem;
         }
         
-        .card-title { font-weight: bold; font-size: 13px; color: #fff; line-height: 1.4; }
-        .card-desc { font-size: 10px; color: #888; margin-top: 4px; }
+        .card-img img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* Kotak Hasil (Sticky di Bawah) */
-        .result-box {
-            position: fixed; bottom: 0; left: 0; right: 0;
-            background: #1a1a1a; padding: 15px 20px;
-            border-top: 2px solid #4CAF50;
-            box-shadow: 0 -5px 20px rgba(0,0,0,0.5);
+        /* BAGIAN TEKS PROMPT */
+        .card-label {
+            padding: 10px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-align: center;
+            color: #212529;
+            background: #f8f9fa;
+        }
+        
+        .card.active .card-label {
+            background: #0d6efd;
+            color: white;
+        }
+
+        /* --- 4. OUTPUT BOX --- */
+        .result-section {
+            background: #212529;
+            padding: 30px;
+            color: white;
+            position: sticky;
+            bottom: 0;
             z-index: 100;
+            border-top: 4px solid #0d6efd;
         }
-        .result-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+
         textarea {
-            width: 100%; height: 70px;
-            background: #000; color: #0f0;
-            border: 1px solid #333; padding: 10px;
-            font-family: monospace; font-size: 12px; border-radius: 5px;
-            resize: none;
+            width: 100%; height: 100px;
+            background: #343a40; border: 1px solid #495057;
+            color: #00ff9d; padding: 15px;
+            border-radius: 6px; font-family: monospace;
+            resize: none; font-size: 0.95rem;
         }
-        button {
-            background: #4CAF50; color: white; border: none;
-            padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold;
+
+        .btn-copy {
+            width: 100%; margin-top: 10px; padding: 12px;
+            background: #0d6efd; color: white; border: none;
+            border-radius: 6px; font-weight: 700; cursor: pointer;
+            text-transform: uppercase;
         }
-        button:hover { background: #45a049; }
+        .btn-copy:hover { background: #0b5ed7; }
+
     </style>
 </head>
 <body>
 
-    <h1>📸 REALISM PROMPT BUILDER</h1>
-    <div style="text-align: center; color: #666; font-size: 12px;">Created by Master Prompter</div>
+<div class="container">
+    
+    <div class="profile-section">
+        <div class="avatar-box">
+            <img src="https://via.placeholder.com/150" alt="Profile">
+        </div>
+        <div class="user-name">Visual Prompt Master</div>
+        <div class="user-desc">Klik gambar untuk menyusun prompt realistis.</div>
+    </div>
 
-    <h2>1. Subjek & Tekstur Utama</h2>
-    <p class="subtitle">Siapa yang mau kamu gambar?</p>
-    <div class="scroll-container" id="cat-subjek">
-        
-        <div class="card" onclick="pilihItem('subjek', 'A close-up portrait of an elderly fisherman, deep wrinkles, weathered skin', this)">
-            <img src="https://via.placeholder.com/150/gray/fff?text=Nelayan+Tua" alt="Nelayan">
-            <div class="card-title">Nelayan Tua</div>
-            <div class="card-desc">Kerutan dalam, kulit kasar.</div>
+    <div class="library-area">
+
+        <div class="section-title">1. Subject Base</div>
+        <div class="visual-grid" id="group1">
+            <div class="card" onclick="select(1, 'A beautiful young woman')">
+                <div class="card-img">
+                    <img src="https://via.placeholder.com/200?text=Woman" alt="Woman">
+                </div>
+                <div class="card-label">Young Woman</div>
+            </div>
+            <div class="card" onclick="select(1, 'A handsome athletic man')">
+                <div class="card-img"><img src="https://via.placeholder.com/200?text=Man" alt="Man"></div>
+                <div class="card-label">Athletic Man</div>
+            </div>
+            <div class="card" onclick="select(1, 'A futuristic cyborg')">
+                <div class="card-img"><img src="https://via.placeholder.com/200?text=Cyborg" alt="Cyborg"></div>
+                <div class="card-label">Cyborg</div>
+            </div>
+             <div class="card" onclick="select(1, 'An old wise person')">
+                <div class="card-img"><img src="https://via.placeholder.com/200?text=Old" alt="Old"></div>
+                <div class="card-label">Elderly Person</div>
+            </div>
         </div>
 
-        <div class="card" onclick="pilihItem('subjek', 'A beautiful woman with freckles, natural skin texture, pore details', this)">
-            <img src="https://via.placeholder.com/150/pink/fff?text=Wanita+Muda" alt="Wanita">
-            <div class="card-title">Wanita Natural</div>
-            <div class="card-desc">Pori-pori, bintik wajah.</div>
+        <div class="section-title">2. Ethnicity</div>
+        <div class="visual-grid" id="group2">
+            <div class="card" onclick="select(2, 'Scandinavian ethnicity')">
+                <div class="card-img"><img src="https://via.placeholder.com/200?text=Scan" alt="Scan"></div>
+                <div class="card-label">Scandinavian</div>
+            </div>
+            <div class="card" onclick="select(2, 'Japanese ethnicity')">
+                <div class="card-img"><img src="https://via.placeholder.com/200?text=Japan" alt="Japan"></div>
+                <div class="card-label">Japanese</div>
+            </div>
+            <div class="card" onclick="select(2, 'African ethnicity')">
+                <div class="card-img"><img src="https://via.placeholder.com/200?text=Africa" alt="Africa"></div>
+                <div class="card-label">African</div>
+            </div>
+            <div class="card" onclick="select(2, 'Indonesian ethnicity')">
+                <div class="card-img"><img src="https://via.placeholder.com/200?text=Indo" alt="Indo"></div>
+                <div class="card-label">Indonesian</div>
+            </div>
         </div>
 
-        <div class="card" onclick="pilihItem('subjek', 'A rusty cyberpunk robot, peeling paint, metallic texture', this)">
-            <img src="https://via.placeholder.com/150/black/fff?text=Robot+Karat" alt="Robot">
-            <div class="card-title">Robot Berkarat</div>
-            <div class="card-desc">Cat terkelupas, besi tua.</div>
+        <div class="section-title">3. Hairstyle</div>
+        <div class="visual-grid" id="group3">
+            <div class="card" onclick="select(3, 'long wavy hair')">
+                <div class="card-img"><img src="https://via.placeholder.com/200?text=Wavy" alt="Wavy"></div>
+                <div class="card-label">Long Wavy</div>
+            </div>
+            <div class="card" onclick="select(3, 'curly ringlets hair')">
+                <div class="card-img"><img src="https://via.placeholder.com/200?text=Curly" alt="Curly"></div>
+                <div class="card-label">Curly Ringlets</div>
+            </div>
+            <div class="card" onclick="select(3, 'pixie cut')">
+                <div class="card-img"><img src="https://via.placeholder.com/200?text=Pixie" alt="Pixie"></div>
+                <div class="card-label">Pixie Cut</div>
+            </div>
+            <div class="card" onclick="select(3, 'braided hair')">
+                <div class="card-img"><img src="https://via.placeholder.com/200?text=Braid" alt="Braid"></div>
+                <div class="card-label">Braided</div>
+            </div>
         </div>
 
+        <div class="section-title">4. Skin Texture (Realism)</div>
+        <div class="visual-grid" id="group4">
+            <div class="card" onclick="select(4, 'visible pores, micro-details')">
+                <div class="card-img"><img src="https://via.placeholder.com/200?text=Pores" alt="Pores"></div>
+                <div class="card-label">Visible Pores</div>
+            </div>
+            <div class="card" onclick="select(4, 'freckles on face')">
+                <div class="card-img"><img src="https://via.placeholder.com/200?text=Freckles" alt="Freckles"></div>
+                <div class="card-label">Freckles</div>
+            </div>
+            <div class="card" onclick="select(4, 'glistening sweaty skin')">
+                <div class="card-img"><img src="https://via.placeholder.com/200?text=Sweat" alt="Sweat"></div>
+                <div class="card-label">Sweaty Skin</div>
+            </div>
+            <div class="card" onclick="select(4, 'acne scars, textured skin')">
+                <div class="card-img"><img src="https://via.placeholder.com/200?text=Scars" alt="Scars"></div>
+                <div class="card-label">Acne Scars</div>
+            </div>
         </div>
 
-
-    <h2>2. Komposisi & Framing</h2>
-    <p class="subtitle">Seberapa dekat kameranya?</p>
-    <div class="scroll-container">
-        
-        <div class="card" onclick="pilihItem('framing', 'extreme close-up macro shot, focus on eyes', this)">
-            <img src="https://via.placeholder.com/150/000/fff?text=Macro+Eye" alt="Macro">
-            <div class="card-title">Macro Mata</div>
-            <div class="card-desc">Sangat dekat, detail iris.</div>
+        <div class="section-title">5. Camera Type</div>
+        <div class="visual-grid" id="group5">
+            <div class="card" onclick="select(5, 'shot on iPhone 15 Pro')">
+                <div class="card-img"><img src="https://via.placeholder.com/200?text=iPhone" alt="iPhone"></div>
+                <div class="card-label">iPhone 15 Pro</div>
+            </div>
+            <div class="card" onclick="select(5, 'shot on Sony A7R V')">
+                <div class="card-img"><img src="https://via.placeholder.com/200?text=Sony" alt="Sony"></div>
+                <div class="card-label">Sony A7R V</div>
+            </div>
+            <div class="card" onclick="select(5, 'GoPro footage')">
+                <div class="card-img"><img src="https://via.placeholder.com/200?text=GoPro" alt="GoPro"></div>
+                <div class="card-label">GoPro</div>
+            </div>
+             <div class="card" onclick="select(5, 'CCTV footage')">
+                <div class="card-img"><img src="https://via.placeholder.com/200?text=CCTV" alt="CCTV"></div>
+                <div class="card-label">CCTV Footage</div>
+            </div>
         </div>
 
-        <div class="card" onclick="pilihItem('framing', 'close-up portrait, shallow depth of field', this)">
-            <img src="https://via.placeholder.com/150/333/fff?text=Portrait" alt="Portrait">
-            <div class="card-title">Portrait Wajah</div>
-            <div class="card-desc">Bahu ke atas, background blur.</div>
+        <div class="section-title">6. Lens</div>
+        <div class="visual-grid" id="group6">
+            <div class="card" onclick="select(6, 'macro lens, extreme close-up')">
+                <div class="card-img"><img src="https://via.placeholder.com/200?text=Macro" alt="Macro"></div>
+                <div class="card-label">Macro Lens</div>
+            </div>
+            <div class="card" onclick="select(6, '16mm wide angle lens')">
+                <div class="card-img"><img src="https://via.placeholder.com/200?text=Wide" alt="Wide"></div>
+                <div class="card-label">16mm Wide Angle</div>
+            </div>
+            <div class="card" onclick="select(6, '85mm portrait lens, bokeh')">
+                <div class="card-img"><img src="https://via.placeholder.com/200?text=85mm" alt="85mm"></div>
+                <div class="card-label">85mm Portrait</div>
+            </div>
+             <div class="card" onclick="select(6, 'fish-eye lens')">
+                <div class="card-img"><img src="https://via.placeholder.com/200?text=Fisheye" alt="Fisheye"></div>
+                <div class="card-label">Fish-eye Lens</div>
+            </div>
         </div>
 
-        <div class="card" onclick="pilihItem('framing', 'full body shot, wide angle, environmental context', this)">
-            <img src="https://via.placeholder.com/150/555/fff?text=Full+Body" alt="Full Body">
-            <div class="card-title">Full Body</div>
-            <div class="card-desc">Terlihat seluruh badan & lokasi.</div>
+        <div class="section-title">7. Lighting</div>
+        <div class="visual-grid" id="group7">
+            <div class="card" onclick="select(7, 'golden hour lighting')">
+                <div class="card-img"><img src="https://via.placeholder.com/200?text=Golden" alt="Golden"></div>
+                <div class="card-label">Golden Hour</div>
+            </div>
+            <div class="card" onclick="select(7, 'neon cyberpunk lighting')">
+                <div class="card-img"><img src="https://via.placeholder.com/200?text=Neon" alt="Neon"></div>
+                <div class="card-label">Neon Lighting</div>
+            </div>
+            <div class="card" onclick="select(7, 'Rembrandt lighting')">
+                <div class="card-img"><img src="https://via.placeholder.com/200?text=Rembrandt" alt="Rembrandt"></div>
+                <div class="card-label">Rembrandt</div>
+            </div>
+            <div class="card" onclick="select(7, 'soft window light')">
+                <div class="card-img"><img src="https://via.placeholder.com/200?text=Soft" alt="Soft"></div>
+                <div class="card-label">Soft Window Light</div>
+            </div>
         </div>
+
+         <div class="section-title">8. Camera Angle</div>
+         <div class="visual-grid" id="group8">
+             <div class="card" onclick="select(8, 'low angle shot')">
+                 <div class="card-img"><img src="https://via.placeholder.com/200?text=Low" alt="Low"></div>
+                 <div class="card-label">Low Angle</div>
+             </div>
+             <div class="card" onclick="select(8, 'high angle shot')">
+                 <div class="card-img"><img src="https://via.placeholder.com/200?text=High" alt="High"></div>
+                 <div class="card-label">High Angle</div>
+             </div>
+             <div class="card" onclick="select(8, 'drone view')">
+                 <div class="card-img"><img src="https://via.placeholder.com/200?text=Drone" alt="Drone"></div>
+                 <div class="card-label">Drone View</div>
+             </div>
+             <div class="card" onclick="select(8, 'selfie angle')">
+                <div class="card-img"><img src="https://via.placeholder.com/200?text=Selfie" alt="Selfie"></div>
+                <div class="card-label">Selfie Angle</div>
+            </div>
+         </div>
 
     </div>
 
+    <div class="result-section">
+        <div style="margin-bottom:10px; font-weight:bold; color:#ccc;">GENERATED PROMPT:</div>
+        <textarea id="output" readonly placeholder="Klik gambar di atas untuk menyusun prompt..."></textarea>
+        <button class="btn-copy" onclick="copyPrompt()">SALIN PROMPT</button>
+    </div>
 
-    <h2>3. Tipe Kamera & Lensa</h2>
-    <p class="subtitle">Pilih alat tempurmu.</p>
-    <div class="scroll-container">
+</div>
+
+<script>
+    // Kita punya 8 Kategori
+    let promptParts = new Array(8).fill("");
+
+    function select(groupIndex, promptText) {
+        // 1. VISUAL: Ganti warna border biru
+        const group = document.getElementById('group' + groupIndex);
+        const cards = group.getElementsByClassName('card');
         
-        <div class="card" onclick="pilihItem('kamera', 'shot on iPhone 15 Pro Max, vibrant colors, computational photography', this)">
-            <img src="https://via.placeholder.com/150/green/fff?text=iPhone+15" alt="iPhone">
-            <div class="card-title">iPhone 15 Pro</div>
-            <div class="card-desc">Warna tajam, modern, kontras.</div>
-        </div>
-
-        <div class="card" onclick="pilihItem('kamera', 'shot on Sony A7R V, 85mm f/1.4 GM lens, extremely sharp', this)">
-            <img src="https://via.placeholder.com/150/blue/fff?text=Sony+Alpha" alt="Sony">
-            <div class="card-title">Sony Alpha (Sharp)</div>
-            <div class="card-desc">Sangat tajam, digital look.</div>
-        </div>
-
-        <div class="card" onclick="pilihItem('kamera', 'shot on Hasselblad H6D, 120mm macro, medium format, hyper-detailed', this)">
-            <img src="https://via.placeholder.com/150/red/fff?text=Hasselblad" alt="Hasselblad">
-            <div class="card-title">Hasselblad (Pro)</div>
-            <div class="card-desc">Detail tekstur kulit maksimal.</div>
-        </div>
-
-        <div class="card" onclick="pilihItem('kamera', 'shot on Kodak Portra 400, 35mm film, vintage grain', this)">
-            <img src="https://via.placeholder.com/150/orange/fff?text=Analog+Film" alt="Film">
-            <div class="card-title">Analog Film</div>
-            <div class="card-desc">Butiran film, warna nostalgia.</div>
-        </div>
-
-    </div>
-
-
-    <h2>4. Pencahayaan (Lighting)</h2>
-    <p class="subtitle">Tentukan suasananya.</p>
-    <div class="scroll-container">
+        // Reset semua kartu di grup ini
+        for (let c of cards) { c.classList.remove('active'); }
         
-        <div class="card" onclick="pilihItem('cahaya', 'dramatic cinematic lighting, high contrast, rim light', this)">
-            <img src="https://via.placeholder.com/150/000000/fff?text=Cinematic" alt="Cinematic">
-            <div class="card-title">Cinematic Dark</div>
-            <div class="card-desc">Gelap, dramatis, kontras tinggi.</div>
-        </div>
+        // Aktifkan kartu yang diklik
+        event.currentTarget.classList.add('active');
 
-        <div class="card" onclick="pilihItem('cahaya', 'soft studio lighting, diffused light, bright atmosphere', this)">
-            <img src="https://via.placeholder.com/150/eeeeee/000?text=Soft+Studio" alt="Soft">
-            <div class="card-title">Soft Studio</div>
-            <div class="card-desc">Terang, lembut, tanpa bayangan.</div>
-        </div>
+        // 2. LOGIC: Simpan text prompt
+        promptParts[groupIndex - 1] = promptText;
 
-        <div class="card" onclick="pilihItem('cahaya', 'golden hour sunlight, warm tones, sun flare', this)">
-            <img src="https://via.placeholder.com/150/ffcc00/000?text=Golden+Hour" alt="Golden">
-            <div class="card-title">Golden Hour</div>
-            <div class="card-desc">Sore hari, hangat, matahari.</div>
-        </div>
+        // 3. RENDER
+        generate();
+    }
 
-    </div>
+    function generate() {
+        // Gabungkan semua yang dipilih
+        const cleanParts = promptParts.filter(p => p !== "");
+        let final = cleanParts.join(", ");
 
-    <div class="result-box">
-        <div class="result-header">
-            <span>✨ HASIL PROMPT:</span>
-            <button onclick="copyPrompt()">Salin Teks</button>
-        </div>
-        <textarea id="hasilPrompt" readonly>Silakan pilih gambar di atas...</textarea>
-    </div>
-
-    <script>
-        // Data Penampung Pilihan
-        let data = {
-            subjek: "",
-            framing: "",
-            kamera: "",
-            cahaya: ""
-        };
-
-        // Fungsi saat kartu diklik
-        function pilihItem(kategori, promptTeks, elemen) {
-            // 1. Simpan Data
-            data[kategori] = promptTeks;
-
-            // 2. Atur Visual (Hapus centang lama di baris yg sama)
-            let parent = elemen.parentElement;
-            let siblings = parent.getElementsByClassName('card');
-            for (let item of siblings) {
-                item.classList.remove('selected');
-            }
-            // 3. Centang yang baru
-            elemen.classList.add('selected');
-
-            // 4. Update Teks
-            generatePrompt();
+        // Tambah bumbu wajib di akhir
+        if(final) {
+            final += ", highly detailed, realistic texture, 8k, sharp focus --ar 9:16 --v 6.0";
         }
 
-        // Fungsi menggabungkan semua kata
-        function generatePrompt() {
-            let p = data; // Singkatan biar pendek
-            let hasil = "";
+        document.getElementById('output').value = final;
+    }
 
-            // Gabungin Logika Blueprint
-            if (p.subjek) hasil += p.subjek + ", ";
-            if (p.framing) hasil += p.framing + ", ";
-            if (p.kamera) hasil += p.kamera + ", ";
-            if (p.cahaya) hasil += p.cahaya + ", ";
-            
-            // Tambahan Wajib (Blueprint Kualitas & Negative Otomatis)
-            if (hasil.length > 5) {
-                hasil += "8k resolution, photorealistic, masterpiece, raw photo.";
-                hasil += " --no cartoon, drawing, illustration, low quality, blurry.";
-            } else {
-                hasil = "Silakan pilih gambar di atas untuk memulai...";
-            }
-
-            document.getElementById('hasilPrompt').value = hasil;
-        }
-
-        // Fungsi tombol salin
-        function copyPrompt() {
-            let teks = document.getElementById('hasilPrompt');
-            teks.select();
-            document.execCommand("copy");
-            alert("Prompt berhasil disalin! Tinggal paste ke AI.");
-        }
-    </script>
+    function copyPrompt() {
+        const txt = document.getElementById('output');
+        if(!txt.value) { alert("Pilih gambar dulu!"); return; }
+        txt.select();
+        document.execCommand('copy');
+        alert("Prompt tersalin!");
+    }
+</script>
 
 </body>
-</html>
+                                          </html>
