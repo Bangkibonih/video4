@@ -1,511 +1,545 @@
 <!DOCTYPE html>
-<html lang="id" class="dark">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Prompt Builder - Industrial Grey</title>
-    
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Google Fonts: Space Grotesk (Tech) & Inter (Clean) -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
-
-    <!-- Custom Config (Industrial Grey Theme) -->
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        display: ['Space Grotesk', 'sans-serif'],
-                    },
-                    colors: {
-                        // Industrial Grey Palette (Not Black)
-                        industrial: {
-                            900: '#1F2023', // Background Utama (Dark Grey)
-                            800: '#2A2B30', // Card Background
-                            700: '#32343A', // Card Hover / Active
-                            600: '#3F4148', // Borders
-                            500: '#9CA3AF', // Text Muted
-                            100: '#F3F4F6', // Text Light
-                        },
-                        acid: {
-                            400: '#CCFF00', // Gen Z Green
-                            500: '#B3E600',
-                            900: 'rgba(204, 255, 0, 0.15)',
-                        }
-                    },
-                    boxShadow: {
-                        'neon': '0 0 10px -2px rgba(204, 255, 0, 0.3)',
-                        'floating': '0 8px 30px rgba(0, 0, 0, 0.4)',
-                    }
-                }
-            }
-        }
-    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gen Z Visual Prompt Builder</title>
     <style>
-        /* Hide Scrollbar but allow scroll */
-        .hide-scrollbar::-webkit-scrollbar { display: none; }
-        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        
-        .scrolling-wrapper {
-            -webkit-overflow-scrolling: touch;
-            scroll-behavior: smooth;
-            scroll-snap-type: x mandatory;
+        /* --- 1. SETUP TEMA RAIN CLOUD --- */
+        :root {
+            /* Palette Rain Cloud */
+            --bg-deep: #1e293b;       /* Langit Mendung Gelap */
+            --bg-card: #334155;       /* Awan Abu */
+            --text-main: #f1f5f9;     /* Putih Tulang */
+            --text-sub: #94a3b8;      /* Abu Muda */
+            --accent: #a5b4fc;        /* Periwinkle / Ungu Pudar (Gen Z vibe) */
+            --accent-glow: rgba(165, 180, 252, 0.4);
+            --glass: rgba(30, 41, 59, 0.7);
         }
-        
-        .card-snap { scroll-snap-align: start; }
-        .no-select { user-select: none; -webkit-user-select: none; }
 
-        /* Smooth Animations */
-        @keyframes popUp {
-            from { transform: translate(-50%, 20px); opacity: 0; }
-            to { transform: translate(-50%, 0); opacity: 1; }
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            padding-bottom: 140px; /* Space buat footer */
+        }
+
+        /* Scrollbar Custom (Tipis & Aesthetic) */
+        ::-webkit-scrollbar { height: 5px; width: 5px; }
+        ::-webkit-scrollbar-thumb { background: #475569; border-radius: 10px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        /* --- 2. PROFILE SECTION (Aesthetic) --- */
+        .profile-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 30px 20px;
+            background: linear-gradient(180deg, rgba(51, 65, 85, 0.5) 0%, rgba(30, 41, 59, 0) 100%);
+            border-radius: 24px;
+            border: 1px solid rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            margin-top: 10px;
+        }
+
+        .avatar-box {
+            width: 110px; height: 110px;
+            border-radius: 50%;
+            padding: 4px;
+            background: linear-gradient(45deg, #64748b, #a5b4fc); /* Gradient Ring */
+            margin-bottom: 15px;
         }
         
-        .toast-enter {
-            animation: popUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        .avatar-box img {
+            width: 100%; height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid var(--bg-deep); /* Biar ada gap */
         }
+
+        .user-name { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 5px; color: var(--text-main); }
+        .user-role { font-size: 0.9rem; color: var(--text-sub); font-weight: 400; }
+
+        /* --- 3. SCROLL SECTION (Horizontal) --- */
+        .step-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .step-header {
+            display: flex; align-items: center; justify-content: space-between;
+        }
+
+        .step-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .scroll-wrapper {
+            display: flex;
+            overflow-x: auto;
+            gap: 12px;
+            padding: 4px; /* Biar shadow gak kepotong */
+            scroll-behavior: smooth;
+        }
+
+        /* KARTU PILIHAN (Rain Cloud Style) */
+        .option-card {
+            min-width: 130px;
+            width: 130px;
+            background: var(--bg-card);
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.05);
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative;
+        }
+
+        .option-card:hover {
+            transform: translateY(-5px);
+            background: #475569;
+        }
+
+        /* STATE ACTIVE (Glow Effect) */
+        .option-card.active {
+            border-color: var(--accent);
+            box-shadow: 0 0 20px var(--accent-glow);
+            background: #3e4c66;
+        }
+
+        .card-img {
+            height: 90px;
+            background: #252f42;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .card-img img { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; transition: 0.3s; }
+        .option-card.active .card-img img { opacity: 1; }
+
+        .card-info { padding: 10px; text-align: center; }
+        .prompt-en { font-size: 0.8rem; font-weight: 700; color: #fff; display: block; margin-bottom: 2px; line-height: 1.3; }
+        .prompt-id { font-size: 0.7rem; color: var(--text-sub); display: block; }
+
+        /* --- 4. STICKY FOOTER (Glassmorphism) --- */
+        .result-bar {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 580px;
+            background: rgba(30, 41, 59, 0.85); /* Semi transparan */
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 15px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .result-label { font-size: 0.75rem; color: var(--text-sub); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-left: 5px;}
+
+        textarea {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: var(--accent);
+            font-family: 'Consolas', monospace;
+            width: 100%; height: 70px;
+            border-radius: 12px;
+            padding: 10px;
+            resize: none; font-size: 0.85rem; outline: none;
+        }
+
+        .copy-btn {
+            background: var(--text-main);
+            color: var(--bg-deep);
+            border: none;
+            padding: 12px;
+            border-radius: 12px;
+            font-weight: 800;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: 0.2s;
+        }
+        .copy-btn:hover { background: var(--accent); box-shadow: 0 0 15px var(--accent-glow); }
+
     </style>
 </head>
-<body class="bg-industrial-900 text-industrial-100 font-sans antialiased pb-48">
+<body>
 
-    <!-- Header Profil -->
-    <header class="bg-industrial-900/90 backdrop-blur-md border-b border-industrial-600 sticky top-0 z-30 transition-all">
-        <div class="max-w-2xl mx-auto px-5 py-5 flex items-center justify-between">
-            <div class="flex items-center gap-4">
-                <div class="relative group">
-                    <!-- Profile Pic -->
-                    <div class="h-11 w-11 rounded-full bg-industrial-700 flex items-center justify-center border border-industrial-600 overflow-hidden">
-                        <img src="https://via.placeholder.com/150/333/ccc?text=USR" alt="Profile" class="h-full w-full object-cover grayscale opacity-80">
-                    </div>
-                    <!-- Status Dot -->
-                    <div class="absolute bottom-0 right-0 w-3 h-3 bg-acid-400 rounded-full border-2 border-industrial-900"></div>
-                </div>
-                <div class="flex flex-col">
-                    <h1 class="font-display font-bold text-lg text-white leading-none tracking-tight">PROMPT_ENGINE</h1>
-                    <span class="text-[10px] text-industrial-500 font-mono tracking-widest mt-1">BUILD v2.1 // GREY</span>
-                </div>
-            </div>
-            <!-- Badge -->
-            <div class="px-3 py-1 bg-industrial-800 border border-industrial-600 rounded-md shadow-sm">
-                <span class="text-[10px] font-bold text-industrial-100 font-mono tracking-wide flex items-center gap-2">
-                    SYSTEM READY
-                </span>
-            </div>
+<div class="container">
+    
+    <div class="profile-section">
+        <div class="avatar-box">
+            <img src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?w=400&auto=format&fit=crop&q=60" alt="Avatar">
         </div>
-    </header>
-
-    <!-- Main Container -->
-    <main id="app-container" class="max-w-2xl mx-auto pt-8 px-0 md:px-5">
-        <!-- Content injected by JS -->
-    </main>
-
-    <!-- Sticky Footer Output -->
-    <div class="fixed bottom-6 left-4 right-4 md:left-1/2 md:right-auto md:w-[42rem] md:-translate-x-1/2 z-40">
-        <div class="bg-industrial-800/95 backdrop-blur-xl border border-industrial-600 rounded-xl p-4 shadow-floating relative overflow-hidden group">
-            
-            <div class="flex flex-col gap-3">
-                <div class="relative">
-                    <div class="flex justify-between items-baseline mb-2">
-                        <label class="text-[10px] font-bold text-industrial-500 font-mono uppercase tracking-widest">Constructed Prompt</label>
-                        <span id="step-counter" class="text-[10px] text-acid-400 font-mono bg-acid-900 px-2 py-0.5 rounded">0/20 SET</span>
-                    </div>
-                    
-                    <!-- Textarea dengan background Industrial Grey -->
-                    <textarea id="output-prompt" readonly class="w-full bg-industrial-900 border border-industrial-600 rounded-lg p-3 text-xs md:text-sm text-gray-300 focus:text-acid-400 focus:border-acid-400 focus:bg-industrial-900 outline-none h-20 resize-none font-mono tracking-tight placeholder-industrial-600 transition-all" placeholder=">> Select elements to initialize generation..."></textarea>
-                </div>
-                
-                <button onclick="copyToClipboard()" class="group w-full bg-industrial-100 hover:bg-acid-400 hover:border-acid-400 border border-transparent text-industrial-900 font-display font-bold text-sm uppercase tracking-wider py-3.5 px-4 rounded-lg transition-all duration-200 ease-out flex justify-center items-center gap-2 shadow-lg">
-                    <span class="relative z-10 flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
-                        </svg>
-                        Copy Output
-                    </span>
-                </button>
-            </div>
-        </div>
+        <div class="user-name">Visual Prompter</div>
+        <div class="user-role">Rain Cloud Edition v.1.0</div>
     </div>
 
-    <!-- Toast Notification -->
-    <div id="copy-toast" class="fixed top-24 left-1/2 transform -translate-x-1/2 bg-industrial-100 text-industrial-900 border-2 border-acid-400 px-6 py-3 rounded-lg shadow-floating z-50 hidden flex items-center gap-3 font-bold font-display text-sm tracking-wide">
-        <div class="w-3 h-3 bg-acid-400 rounded-full animate-pulse"></div>
-        COPIED TO CLIPBOARD
-    </div>
+    <div id="app-content"></div>
 
-    <!-- JAVASCRIPT LOGIC -->
-    <script>
-        // --- DATA STRUCTURE ---
-        // (Sama seperti sebelumnya)
-        const categories = [
-            {
-                id: 1, title: "RAS & ETNIS", options: [
-                    { val: "Scandinavian", sub: "Putih, mata biru" },
-                    { val: "Mediterranean", sub: "Kulit olive, Italia" },
-                    { val: "East Asian", sub: "Cina/Jepang/Korea" },
-                    { val: "Southeast Asian", sub: "Indonesia/Thai" },
-                    { val: "African / Nubian", sub: "Kulit hitam pekat" },
-                    { val: "Latina", sub: "Eksotis, kulit tan" },
-                    { val: "Indian", sub: "Asia Selatan" }
-                ]
-            },
-            {
-                id: 2, title: "TIPE TUBUH", options: [
-                    { val: "Skinny / Slender", sub: "Kurus Ramping" },
-                    { val: "Athletic / Fit", sub: "Atletis Bugar" },
-                    { val: "Muscular", sub: "Berotot Besar" },
-                    { val: "Curvy / Hourglass", sub: "Berisi/Bahenol" },
-                    { val: "Plus Size", sub: "Gemuk" },
-                    { val: "Average Body", sub: "Tubuh Rata-rata" }
-                ]
-            },
-            {
-                id: 3, title: "GAYA RAMBUT", options: [
-                    { val: "Straight hair", sub: "Lurus" },
-                    { val: "Wavy hair", sub: "Berombak" },
-                    { val: "Curly hair", sub: "Keriting" },
-                    { val: "Afro hair", sub: "Kribo" },
-                    { val: "Braided hair", sub: "Kepang" },
-                    { val: "Dreadlocks", sub: "Gimbal" },
-                    { val: "Buzz cut", sub: "Cepak" },
-                    { val: "Pixie cut", sub: "Pendek Wanita" },
-                    { val: "Bob cut", sub: "Bob Poni" },
-                    { val: "Messy bun", sub: "Sanggul Acak" },
-                    { val: "Wet look hair", sub: "Basah Klimis" }
-                ]
-            },
-            {
-                id: 4, title: "WARNA RAMBUT", options: [
-                    { val: "Platinum Blonde", sub: "Pirang Platinum" },
-                    { val: "Strawberry Blonde", sub: "Pirang Kemerahan" },
-                    { val: "Brunette", sub: "Coklat Tua" },
-                    { val: "Jet Black", sub: "Hitam Pekat" },
-                    { val: "Redhead", sub: "Merah Alami" },
-                    { val: "Ombre hair", sub: "Gradasi" },
-                    { val: "Pastel Pink", sub: "Merah Muda" },
-                    { val: "Silver / Grey", sub: "Perak/Uban" }
-                ]
-            },
-            {
-                id: 5, title: "DETAIL WAJAH", options: [
-                    { val: "Visible pores", sub: "Pori-pori jelas" },
-                    { val: "Freckles", sub: "Bintik matahari" },
-                    { val: "Acne scars", sub: "Bekas jerawat" },
-                    { val: "Wrinkles", sub: "Kerutan" },
-                    { val: "Rosy cheeks", sub: "Pipi merona" },
-                    { val: "Sweaty skin", sub: "Berkeringat" },
-                    { val: "Vitiligo", sub: "Bercak kulit" },
-                    { val: "Mole", sub: "Tahi lalat" }
-                ]
-            },
-            {
-                id: 6, title: "EKSPRESI", options: [
-                    { val: "Dilated pupils", sub: "Pupil membesar" },
-                    { val: "Heterochromia", sub: "Mata beda warna" },
-                    { val: "Hooded eyes", sub: "Kelopak tertutup" },
-                    { val: "Smirk", sub: "Senyum sinis" },
-                    { val: "Looking at camera", sub: "Tatap kamera" },
-                    { val: "Thousand-yard stare", sub: "Tatapan kosong" }
-                ]
-            },
-            {
-                id: 7, title: "OUTFIT STYLE", options: [
-                    { val: "Plain white tee", sub: "Kaos Putih" },
-                    { val: "Oversized hoodie", sub: "Hoodie Besar" },
-                    { val: "Flannel shirt", sub: "Kemeja Flanel" },
-                    { val: "Knitted sweater", sub: "Sweater Rajut" },
-                    { val: "Floral dress", sub: "Gaun Bunga" },
-                    { val: "Denim jacket", sub: "Jaket Denim" },
-                    { val: "Techwear jacket", sub: "Jaket Techwear" },
-                    { val: "Bomber jacket", sub: "Jaket Bomber" },
-                    { val: "Puffer jacket", sub: "Jaket Tebal" },
-                    { val: "Graphic tee", sub: "Kaos Grafis" },
-                    { val: "Tracksuit", sub: "Set Olahraga" },
-                    { val: "Streetwear", sub: "Streetwear" },
-                    { val: "Silk gown", sub: "Gaun Sutra" },
-                    { val: "Black tuxedo", sub: "Tuksedo" },
-                    { val: "Cocktail dress", sub: "Gaun Pesta" },
-                    { val: "Three-piece suit", sub: "Setelan Jas" },
-                    { val: "Office attire", sub: "Kantoran" },
-                    { val: "Turtleneck", sub: "Turtleneck" },
-                    { val: "Trench coat", sub: "Mantel Panjang" },
-                    { val: "Kimono", sub: "Kimono" },
-                    { val: "Kebaya", sub: "Kebaya" },
-                    { val: "Cheongsam", sub: "Cheongsam" },
-                    { val: "Saree", sub: "Sari India" },
-                    { val: "Hanbok", sub: "Hanbok" },
-                    { val: "Cyberpunk jacket", sub: "Jaket Cyber" },
-                    { val: "Armor", sub: "Baju Zirah" },
-                    { val: "Astronaut suit", sub: "Baju Astronot" },
-                    { val: "Gym outfit", sub: "Baju Gym" },
-                    { val: "Doctor coat", sub: "Jas Dokter" },
-                    { val: "Police uniform", sub: "Seragam Polisi" },
-                    { val: "Military gear", sub: "Militer" },
-                    { val: "School uniform", sub: "Seragam Sekolah" }
-                ]
-            },
-            {
-                id: 8, title: "BAHAN (FABRIC)", options: [
-                    { val: "Cotton", sub: "Katun" },
-                    { val: "Silk", sub: "Sutra" },
-                    { val: "Denim", sub: "Jeans" },
-                    { val: "Leather", sub: "Kulit" },
-                    { val: "Latex", sub: "Karet/Lateks" },
-                    { val: "Wool", sub: "Wol" },
-                    { val: "Sheer", sub: "Transparan" },
-                    { val: "Velvet", sub: "Beludru" }
-                ]
-            },
-            {
-                id: 9, title: "KONDISI", options: [
-                    { val: "Perfectly ironed", sub: "Rapi licin" },
-                    { val: "Wrinkled", sub: "Kusut" },
-                    { val: "Soaked", sub: "Basah kuyup" },
-                    { val: "Grimy", sub: "Kotor" },
-                    { val: "Windblown", sub: "Tertiup angin" }
-                ]
-            },
-            {
-                id: 10, title: "LOKASI", options: [
-                    { val: "Tokyo Night", sub: "Tokyo Malam" },
-                    { val: "Coffee Shop", sub: "Kedai Kopi" },
-                    { val: "White Studio", sub: "Studio Putih" },
-                    { val: "Forest", sub: "Hutan" },
-                    { val: "Penthouse", sub: "Apartemen" },
-                    { val: "Ruins", sub: "Reruntuhan" },
-                    { val: "Beach Sunset", sub: "Pantai" },
-                    { val: "Bedroom", sub: "Kamar Tidur" }
-                ]
-            },
-            {
-                id: 11, title: "CUACA", options: [
-                    { val: "Sunny", sub: "Cerah" },
-                    { val: "Rainy", sub: "Hujan" },
-                    { val: "Foggy", sub: "Berkabut" },
-                    { val: "Snowing", sub: "Salju" },
-                    { val: "Windy", sub: "Berangin" }
-                ]
-            },
-            {
-                id: 12, title: "KAMERA", options: [
-                    { val: "iPhone 15 Pro", sub: "HP High-End" },
-                    { val: "Sony A7R V", sub: "Mirrorless" },
-                    { val: "Fujifilm GFX", sub: "Medium Format" },
-                    { val: "Polaroid", sub: "Instan" },
-                    { val: "GoPro", sub: "Action Cam" },
-                    { val: "CCTV", sub: "CCTV" },
-                    { val: "Drone", sub: "Drone" },
-                    { val: "Disposable", sub: "Kamera Mainan" }
-                ]
-            },
-            {
-                id: 13, title: "LENSA", options: [
-                    { val: "Macro", sub: "Makro" },
-                    { val: "16mm Wide", sub: "Lebar" },
-                    { val: "35mm", sub: "Street" },
-                    { val: "50mm", sub: "Standar" },
-                    { val: "85mm", sub: "Portrait" },
-                    { val: "200mm", sub: "Telephoto" }
-                ]
-            },
-            {
-                id: 14, title: "FILM LOOK", options: [
-                    { val: "Kodak Portra 400", sub: "Skin Tone" },
-                    { val: "Kodak Gold 200", sub: "Warm" },
-                    { val: "Fujifilm Velvia", sub: "Vibrant" },
-                    { val: "Ilford HP5", sub: "BW Grain" },
-                    { val: "VHS Glitch", sub: "Rusak" }
-                ]
-            },
-            {
-                id: 15, title: "ANGLE", options: [
-                    { val: "Eye-level", sub: "Sejajar" },
-                    { val: "Low angle", sub: "Dari Bawah" },
-                    { val: "High angle", sub: "Dari Atas" },
-                    { val: "Bird's eye", sub: "Atas Tegak" },
-                    { val: "Dutch angle", sub: "Miring" },
-                    { val: "Selfie", sub: "Selfie" },
-                    { val: "Over-shoulder", sub: "Lewat Bahu" }
-                ]
-            },
-            {
-                id: 16, title: "FRAMING", options: [
-                    { val: "Extreme Close-up", sub: "Detail Makro" },
-                    { val: "Close-up", sub: "Wajah" },
-                    { val: "Medium shot", sub: "Setengah Badan" },
-                    { val: "Full body", sub: "Seluruh Badan" },
-                    { val: "Wide shot", sub: "Pemandangan" }
-                ]
-            },
-            {
-                id: 17, title: "CAHAYA ALAM", options: [
-                    { val: "Golden Hour", sub: "Sore Emas" },
-                    { val: "Blue Hour", sub: "Subuh Biru" },
-                    { val: "Hard Sun", sub: "Terik" },
-                    { val: "Overcast", sub: "Mendung" },
-                    { val: "Moonlight", sub: "Bulan" }
-                ]
-            },
-            {
-                id: 18, title: "STUDIO LIGHT", options: [
-                    { val: "Rembrandt", sub: "Klasik" },
-                    { val: "Butterfly", sub: "Glamour" },
-                    { val: "Rim Light", sub: "Backlight" },
-                    { val: "Silhouette", sub: "Siluet" },
-                    { val: "God Rays", sub: "Berkas Cahaya" },
-                    { val: "Neon", sub: "Neon" }
-                ]
-            },
-            {
-                id: 19, title: "RASIO", options: [
-                    { val: "--ar 9:16", sub: "Story" },
-                    { val: "--ar 4:5", sub: "Feed" },
-                    { val: "--ar 1:1", sub: "Square" },
-                    { val: "--ar 16:9", sub: "Landscape" }
-                ]
-            },
-            {
-                id: 20, title: "QUALITY", options: [
-                    { val: "Photorealistic", sub: "Nyata" },
-                    { val: "Hyper-detailed", sub: "Detail" },
-                    { val: "Raw Style", sub: "Mentah" },
-                    { val: "Cinematic", sub: "Film" },
-                    { val: "Vintage", sub: "Jadul" }
-                ]
-            }
-        ];
+</div>
 
-        // --- STATE MANAGEMENT ---
-        const userSelections = new Array(20).fill(null);
+<div class="result-bar">
+    <div class="result-label">Generated Prompt</div>
+    <textarea id="final-prompt" readonly placeholder="Select options to build your prompt..."></textarea>
+    <button class="copy-btn" onclick="copyText()">Copy Prompt</button>
+</div>
 
-        // --- INITIALIZATION ---
-        document.addEventListener('DOMContentLoaded', () => {
-            renderApp();
-            updateOutput();
+<script>
+    // =========================================================
+    // DATABASE LENGKAP (20 LANGKAH + ISI)
+    // Cukup edit teks di sini, HTML akan dibuat otomatis!
+    // =========================================================
+    
+    const db = [
+        {
+            title: "1. Ras & Etnis",
+            options: [
+                { en: "Scandinavian", id: "Putih, mata biru" },
+                { en: "Mediterranean", id: "Kulit olive, Italia" },
+                { en: "East Asian", id: "Cina/Jepang/Korea" },
+                { en: "Southeast Asian", id: "Indo/Thai" },
+                { en: "Nubian / African", id: "Hitam pekat" },
+                { en: "Latina", id: "Eksotis Tan" },
+                { en: "South Asian", id: "India/Pakistan" }
+            ]
+        },
+        {
+            title: "2. Tipe Tubuh",
+            options: [
+                { en: "Skinny / Slender", id: "Kurus Ramping" },
+                { en: "Athletic / Fit", id: "Atletis Bugar" },
+                { en: "Muscular", id: "Berotot Besar" },
+                { en: "Curvy Hourglass", id: "Berisi/Bahenol" },
+                { en: "Plus Size", id: "Gemuk" },
+                { en: "Average Body", id: "Tubuh Biasa" }
+            ]
+        },
+        {
+            title: "3. Tekstur Rambut",
+            options: [
+                { en: "Straight hair", id: "Lurus" },
+                { en: "Wavy hair", id: "Berombak" },
+                { en: "Curly hair", id: "Keriting" },
+                { en: "Afro Kinky", id: "Kribo" },
+                { en: "Braids", id: "Kepang" },
+                { en: "Dreadlocks", id: "Gimbal" },
+                { en: "Buzz cut", id: "Cepak" },
+                { en: "Pixie cut", id: "Pendek Cewek" },
+                { en: "Bob cut with bangs", id: "Bob Poni" },
+                { en: "Messy bun", id: "Sanggul Acak" },
+                { en: "Wet look hair", id: "Basah Klimis" }
+            ]
+        },
+        {
+            title: "4. Warna Rambut",
+            options: [
+                { en: "Platinum Blonde", id: "Pirang Putih" },
+                { en: "Brunette", id: "Cokelat Gelap" },
+                { en: "Jet Black", id: "Hitam Pekat" },
+                { en: "Ginger Redhead", id: "Merah Alami" },
+                { en: "Pastel Pink", id: "Pink Lembut" },
+                { en: "Silver Grey", id: "Perak/Uban" },
+                { en: "Ombre hair", id: "Gradasi Warna" }
+            ]
+        },
+        {
+            title: "5. Detail Kulit (Realism)",
+            options: [
+                { en: "Visible pores", id: "Pori-pori Jelas" },
+                { en: "Freckles", id: "Bintik Matahari" },
+                { en: "Acne scars", id: "Bekas Jerawat" },
+                { en: "Wrinkled skin", id: "Kerutan" },
+                { en: "Rosy cheeks", id: "Pipi Merona" },
+                { en: "Sweaty glistening", id: "Berkeringat" },
+                { en: "Mole beauty mark", id: "Tahi Lalat" }
+            ]
+        },
+        {
+            title: "6. Ekspresi Wajah",
+            options: [
+                { en: "Dilated pupils", id: "Pupil Besar" },
+                { en: "Heterochromia", id: "Mata Beda Warna" },
+                { en: "Smirk", id: "Senyum Sinis" },
+                { en: "Looking at camera", id: "Tatap Kamera" },
+                { en: "Thousand-yard stare", id: "Tatapan Kosong" }
+            ]
+        },
+        {
+            title: "7. Outfit (Pakaian)",
+            options: [
+                { en: "White T-shirt", id: "Kaos Putih" },
+                { en: "Oversized Hoodie", id: "Hoodie Besar" },
+                { en: "Flannel Shirt", id: "Kemeja Kotak" },
+                { en: "Summer Dress", id: "Gaun Musim Panas" },
+                { en: "Techwear Jacket", id: "Jaket Tech" },
+                { en: "Evening Gown", id: "Gaun Pesta" },
+                { en: "Tuxedo", id: "Jas Formal" },
+                { en: "Cyberpunk Jacket", id: "Jaket Neon" },
+                { en: "School Uniform", id: "Seragam Sekolah" },
+                { en: "Space Suit", id: "Baju Astronot" }
+            ]
+        },
+        {
+            title: "8. Bahan Kain (Fabric)",
+            options: [
+                { en: "Cotton Linen", id: "Katun (Matte)" },
+                { en: "Silk Satin", id: "Sutra (Kilap)" },
+                { en: "Denim", id: "Jeans (Kasar)" },
+                { en: "Leather", id: "Kulit (Tajam)" },
+                { en: "Latex", id: "Karet (Basah)" },
+                { en: "Knitted Wool", id: "Rajut (Berbulu)" },
+                { en: "Lace Sheer", id: "Renda (Transparan)" }
+            ]
+        },
+        {
+            title: "9. Kondisi Pakaian",
+            options: [
+                { en: "Perfectly ironed", id: "Rapi Licin" },
+                { en: "Wrinkled Creased", id: "Kusut Natural" },
+                { en: "Wet Soaked", id: "Basah Kuyup" },
+                { en: "Dirty Grimy", id: "Kotor Debu" },
+                { en: "Windblown", id: "Tertiup Angin" }
+            ]
+        },
+        {
+            title: "10. Environment (Lokasi)",
+            options: [
+                { en: "Tokyo Street Night", id: "Jalanan Tokyo" },
+                { en: "Coffee Shop", id: "Kafe Nyaman" },
+                { en: "White Studio", id: "Studio Putih" },
+                { en: "Mystical Forest", id: "Hutan Mistis" },
+                { en: "Luxury Penthouse", id: "Apartemen Mewah" },
+                { en: "Abandoned Building", id: "Gedung Tua" },
+                { en: "Bedroom Interior", id: "Kamar Tidur" }
+            ]
+        },
+        {
+            title: "11. Cuaca & Atmosfer",
+            options: [
+                { en: "Sunny Clear", id: "Cerah" },
+                { en: "Rainy Wet", id: "Hujan" },
+                { en: "Foggy Misty", id: "Berkabut" },
+                { en: "Snowing", id: "Salju" },
+                { en: "Windy", id: "Berangin" }
+            ]
+        },
+        {
+            title: "12. Jenis Kamera",
+            options: [
+                { en: "Shot on iPhone 17", id: "Foto HP" },
+                { en: "Shot on Sony A7R", id: "Kamera Pro" },
+                { en: "Shot on Fuji GFX", id: "Medium Format" },
+                { en: "Polaroid", id: "Foto Instan" },
+                { en: "GoPro Footage", id: "Action Cam" },
+                { en: "CCTV Footage", id: "Kamera Pengawas" },
+                { en: "Drone View", id: "Foto Udara" }
+            ]
+        },
+        {
+            title: "13. Lensa (Focal Length)",
+            options: [
+                { en: "Macro Lens", id: "Sangat Dekat" },
+                { en: "16mm Wide", id: "Sudut Lebar" },
+                { en: "35mm Street", id: "Lensa Jalanan" },
+                { en: "50mm Standard", id: "Mata Manusia" },
+                { en: "85mm Portrait", id: "Lensa Bokeh" },
+                { en: "200mm Telephoto", id: "Zoom Jauh" }
+            ]
+        },
+        {
+            title: "14. Film Stocks (Warna)",
+            options: [
+                { en: "Kodak Portra 400", id: "Warna Kulit Bagus" },
+                { en: "Kodak Gold 200", id: "Kuning Hangat" },
+                { en: "Fujifilm Velvia", id: "Kontras Tinggi" },
+                { en: "Ilford HP5", id: "Hitam Putih" },
+                { en: "VHS Glitch", id: "Efek Kaset Rusak" }
+            ]
+        },
+        {
+            title: "15. Camera Angle",
+            options: [
+                { en: "Eye-level", id: "Sejajar Mata" },
+                { en: "Low angle", id: "Dari Bawah" },
+                { en: "High angle", id: "Dari Atas" },
+                { en: "Overhead", id: "Tegak Lurus Atas" },
+                { en: "Dutch angle", id: "Miring" },
+                { en: "Selfie angle", id: "Selfie" }
+            ]
+        },
+        {
+            title: "16. Framing (Jarak)",
+            options: [
+                { en: "Extreme Close-up", id: "Mata/Bibir Saja" },
+                { en: "Close-up", id: "Wajah Full" },
+                { en: "Medium shot", id: "Setengah Badan" },
+                { en: "Full body", id: "Seluruh Badan" },
+                { en: "Wide shot", id: "Pemandangan Luas" }
+            ]
+        },
+        {
+            title: "17. Pencahayaan Alam",
+            options: [
+                { en: "Golden Hour", id: "Sore Emas" },
+                { en: "Blue Hour", id: "Subuh Biru" },
+                { en: "Midday Sun", id: "Terik Siang" },
+                { en: "Overcast", id: "Mendung Lembut" },
+                { en: "Moonlight", id: "Cahaya Bulan" }
+            ]
+        },
+        {
+            title: "18. Lighting Studio",
+            options: [
+                { en: "Rembrandt", id: "Dramatis" },
+                { en: "Butterfly", id: "Cantik (Cewek)" },
+                { en: "Rim Lighting", id: "Garis Cahaya Belakang" },
+                { en: "Silhouette", id: "Siluet Gelap" },
+                { en: "Neon Lighting", id: "Lampu Warna" },
+                { en: "Volumetric Rays", id: "Sinar Dewa" }
+            ]
+        },
+        {
+            title: "19. Aspect Ratio",
+            options: [
+                { en: "--ar 9:16", id: "Story / HP" },
+                { en: "--ar 4:5", id: "IG Feed" },
+                { en: "--ar 1:1", id: "Kotak" },
+                { en: "--ar 16:9", id: "Youtube / Landscape" }
+            ]
+        },
+        {
+            title: "20. Quality Boosters",
+            options: [
+                { en: "Photorealistic", id: "Foto Asli" },
+                { en: "Hyper-detailed 8K", id: "Super Detail" },
+                { en: "Raw Candid", id: "Mentah Jujur" },
+                { en: "Cinematic", id: "Film Bioskop" },
+                { en: "Vintage", id: "Jadul" }
+            ]
+        }
+    ];
+
+    // =========================================================
+    // LOGIKA APLIKASI
+    // =========================================================
+    
+    // Array untuk menyimpan jawaban user (sesuai jumlah kategori)
+    let userSelections = new Array(db.length).fill("");
+
+    function renderApp() {
+        const app = document.getElementById('app-content');
+        
+        db.forEach((section, index) => {
+            // Buat Container per Step
+            const stepDiv = document.createElement('div');
+            stepDiv.className = 'step-container';
+
+            // Buat Judul
+            const title = document.createElement('div');
+            title.className = 'step-title';
+            title.innerText = section.title;
+            stepDiv.appendChild(title);
+
+            // Buat Scroll Wrapper
+            const scrollWrapper = document.createElement('div');
+            scrollWrapper.className = 'scroll-wrapper';
+            scrollWrapper.id = `group-${index}`;
+
+            // Render Kartu Pilihan
+            section.options.forEach(opt => {
+                const card = document.createElement('div');
+                card.className = 'option-card';
+                card.onclick = () => selectOption(index, opt.en, card);
+
+                // Placeholder Image (Ganti src nanti)
+                const imgBox = document.createElement('div');
+                imgBox.className = 'card-img';
+                // Pake placeholder warna senada
+                imgBox.innerHTML = `<img src="https://via.placeholder.com/150/334155/a5b4fc?text=${opt.en.split(' ')[0]}" alt="img">`;
+
+                // Info Teks
+                const infoBox = document.createElement('div');
+                infoBox.className = 'card-info';
+                infoBox.innerHTML = `<span class="prompt-en">${opt.en}</span><span class="prompt-id">${opt.id}</span>`;
+
+                card.appendChild(imgBox);
+                card.appendChild(infoBox);
+                scrollWrapper.appendChild(card);
+            });
+
+            stepDiv.appendChild(scrollWrapper);
+            app.appendChild(stepDiv);
         });
+    }
 
-        // --- RENDER FUNCTION ---
-        function renderApp() {
-            const container = document.getElementById('app-container');
-            
-            categories.forEach((category, index) => {
-                const section = document.createElement('section');
-                section.className = "mb-10 pl-5 md:pl-0";
+    function selectOption(groupIndex, value, cardElement) {
+        // 1. Visual: Reset active class di grup ini
+        const group = document.getElementById(`group-${groupIndex}`);
+        const cards = group.getElementsByClassName('option-card');
+        for (let c of cards) c.classList.remove('active');
 
-                const title = document.createElement('h2');
-                title.className = "font-display text-xs font-bold text-industrial-500 uppercase tracking-widest mb-4 flex items-center gap-2";
-                title.innerHTML = `<span class="text-acid-400 bg-industrial-800 px-1 rounded border border-industrial-600">0${index + 1}</span> ${category.title}`;
-                section.appendChild(title);
+        // 2. Visual: Set active class ke kartu yg diklik
+        cardElement.classList.add('active');
 
-                const scrollWrapper = document.createElement('div');
-                scrollWrapper.className = "flex overflow-x-auto gap-3 pb-4 hide-scrollbar scrolling-wrapper -ml-5 px-5 md:ml-0 md:px-0";
-                
-                category.options.forEach(option => {
-                    const card = document.createElement('div');
-                    // INDUSTRIAL GREY CARD
-                    card.className = `
-                        relative flex-shrink-0 w-[135px] bg-industrial-800 rounded-lg border border-industrial-600 
-                        p-2.5 cursor-pointer transition-all duration-200 card-snap no-select group hover:border-industrial-500
-                        category-${index}
-                    `;
-                    card.dataset.value = option.val;
-                    card.dataset.categoryIndex = index;
-                    card.onclick = () => selectOption(index, option.val, card);
+        // 3. Data: Simpan pilihan
+        userSelections[groupIndex] = value;
 
-                    card.innerHTML = `
-                        <!-- Active Indicator Stripe -->
-                        <div class="selection-stripe absolute top-0 left-0 w-full h-1 bg-acid-400 opacity-0 transition-opacity rounded-t-lg shadow-[0_2px_10px_rgba(204,255,0,0.5)]"></div>
-                        
-                        <div class="aspect-square bg-industrial-900 rounded-md mb-3 overflow-hidden relative border border-industrial-600/50">
-                             <img src="https://via.placeholder.com/150x150/25262b/9ca3af?text=${option.val.charAt(0)}" 
-                                  class="w-full h-full object-cover opacity-60 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500 grayscale group-hover:grayscale-0" 
-                                  alt="${option.val}"
-                                  loading="lazy">
-                        </div>
-                        <h3 class="font-sans text-sm font-semibold text-industrial-100 leading-tight mb-1 group-hover:text-white transition-colors tracking-tight">${option.val}</h3>
-                        <p class="text-[10px] text-industrial-500 font-mono leading-tight tracking-tight">${option.sub}</p>
-                    `;
-                    
-                    scrollWrapper.appendChild(card);
-                });
+        // 4. Generate
+        generatePrompt();
+    }
 
-                const spacer = document.createElement('div');
-                spacer.className = "w-2 flex-shrink-0";
-                scrollWrapper.appendChild(spacer);
+    function generatePrompt() {
+        // Gabung array jadi string, filter yang kosong
+        const cleanParts = userSelections.filter(item => item !== "");
+        let finalString = cleanParts.join(", ");
 
-                section.appendChild(scrollWrapper);
-                container.appendChild(section);
-            });
+        // Tambah suffix default (wajib buat realism)
+        if (finalString) {
+            finalString += " --v 6.0 --style raw";
         }
 
-        // --- LOGIC HANDLING ---
-        function selectOption(categoryIndex, value, clickedCard) {
-            userSelections[categoryIndex] = value;
+        document.getElementById('final-prompt').value = finalString;
+    }
 
-            const siblings = document.querySelectorAll(`.category-${categoryIndex}`);
-            
-            // RESET SIBLINGS (Grey State)
-            siblings.forEach(el => {
-                el.classList.remove('border-acid-400', 'bg-industrial-700', 'shadow-md');
-                el.classList.add('bg-industrial-800', 'border-industrial-600');
-                el.querySelector('.selection-stripe').classList.add('opacity-0');
-                
-                const title = el.querySelector('h3');
-                title.classList.remove('text-acid-400');
-                title.classList.add('text-industrial-100');
-            });
+    function copyText() {
+        const txt = document.getElementById('final-prompt');
+        if (!txt.value) { alert("Pilih opsi dulu bro!"); return; }
+        txt.select();
+        document.execCommand('copy');
+        alert("Prompt tersalin! Gas ke Midjourney 🔥");
+    }
 
-            // ACTIVATE SELECTED (Industrial Active)
-            clickedCard.classList.remove('bg-industrial-800', 'border-industrial-600');
-            clickedCard.classList.add('bg-industrial-700', 'border-acid-400');
-            clickedCard.querySelector('.selection-stripe').classList.remove('opacity-0');
-            
-            const activeTitle = clickedCard.querySelector('h3');
-            activeTitle.classList.remove('text-industrial-100');
-            activeTitle.classList.add('text-acid-400');
+    // Jalankan aplikasi saat load
+    renderApp();
 
-            updateOutput();
-        }
+</script>
 
-        function updateOutput() {
-            const validSelections = userSelections.filter(item => item !== null && item !== "");
-            let promptString = validSelections.join(", ");
-
-            if (promptString.length > 0) {
-                promptString += " --v 6.0 --style raw";
-            }
-
-            document.getElementById('output-prompt').value = promptString;
-            
-            // Update counter UI
-            document.getElementById('step-counter').innerText = `${validSelections.length}/20 SET`;
-        }
-
-        function copyToClipboard() {
-            const textarea = document.getElementById('output-prompt');
-            if(!textarea.value) return;
-
-            textarea.select();
-            textarea.setSelectionRange(0, 99999);
-            
-            navigator.clipboard.writeText(textarea.value).then(() => {
-                showToast();
-            });
-        }
-
-        function showToast() {
-            const toast = document.getElementById('copy-toast');
-            toast.classList.remove('hidden');
-            toast.classList.add('toast-enter');
-            
-            setTimeout(() => {
-                toast.classList.remove('toast-enter');
-                toast.classList.add('hidden');
-            }, 2500);
-        }
-    </script>
 </body>
 </html>
