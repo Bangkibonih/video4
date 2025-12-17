@@ -1,387 +1,511 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" class="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Visual Prompt Library</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Prompt Builder - Industrial Grey</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Space Grotesk (Tech) & Inter (Clean) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+
+    <!-- Custom Config (Industrial Grey Theme) -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Space Grotesk', 'sans-serif'],
+                    },
+                    colors: {
+                        // Industrial Grey Palette (Not Black)
+                        industrial: {
+                            900: '#1F2023', // Background Utama (Dark Grey)
+                            800: '#2A2B30', // Card Background
+                            700: '#32343A', // Card Hover / Active
+                            600: '#3F4148', // Borders
+                            500: '#9CA3AF', // Text Muted
+                            100: '#F3F4F6', // Text Light
+                        },
+                        acid: {
+                            400: '#CCFF00', // Gen Z Green
+                            500: '#B3E600',
+                            900: 'rgba(204, 255, 0, 0.15)',
+                        }
+                    },
+                    boxShadow: {
+                        'neon': '0 0 10px -2px rgba(204, 255, 0, 0.3)',
+                        'floating': '0 8px 30px rgba(0, 0, 0, 0.4)',
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        /* --- 1. SETUP TAMPILAN BERSIH --- */
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, Helvetica, sans-serif; }
+        /* Hide Scrollbar but allow scroll */
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         
-        body {
-            background-color: #f8f9fa;
-            display: flex;
-            justify-content: center;
-            padding: 40px 20px;
-            min-height: 100vh;
-            color: #212529;
-        }
-
-        .container {
-            background: white;
-            width: 100%;
-            max-width: 1000px; /* Lebar biar muat banyak gambar */
-            border-radius: 12px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* --- 2. HEADER PROFIL --- */
-        .profile-section {
-            background: white;
-            padding: 40px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            border-bottom: 1px solid #dee2e6;
-            text-align: center;
-        }
-
-        .avatar-box {
-            width: 120px; height: 120px;
-            border-radius: 50%; overflow: hidden;
-            margin-bottom: 15px;
-            border: 4px solid #fff;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            background: #e9ecef;
-        }
-        .avatar-box img { width: 100%; height: 100%; object-fit: cover; }
-
-        .user-name { font-size: 1.8rem; font-weight: 800; color: #212529; margin-bottom: 5px; }
-        .user-desc { font-size: 1rem; color: #6c757d; max-width: 500px; }
-
-        /* --- 3. AREA VISUAL LIBRARY --- */
-        .library-area { padding: 40px; }
-
-        .section-title {
-            font-size: 1.2rem;
-            font-weight: 700;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #e9ecef;
-            color: #495057;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        /* GRID GAMBAR */
-        .visual-grid {
-            display: grid;
-            /* Grid responsif: otomatis ngatur jumlah kolom sesuai lebar layar */
-            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); 
-            gap: 15px;
-            margin-bottom: 50px;
-        }
-
-        .card {
-            border: 1px solid #dee2e6;
-            border-radius: 8px;
-            overflow: hidden;
-            cursor: pointer;
-            transition: all 0.2s;
-            background: #fff;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-            border-color: #adb5bd;
-        }
-
-        .card.active {
-            border: 2px solid #0d6efd;
-            background-color: #e7f1ff;
-        }
-
-        /* BAGIAN FOTO */
-        .card-img {
-            width: 100%;
-            height: 140px; /* Tinggi foto seragam */
-            background-color: #ced4da; /* Warna abu buat placeholder */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #6c757d;
-            font-size: 0.8rem;
+        .scrolling-wrapper {
+            -webkit-overflow-scrolling: touch;
+            scroll-behavior: smooth;
+            scroll-snap-type: x mandatory;
         }
         
-        .card-img img { width: 100%; height: 100%; object-fit: cover; }
+        .card-snap { scroll-snap-align: start; }
+        .no-select { user-select: none; -webkit-user-select: none; }
 
-        /* BAGIAN TEKS PROMPT */
-        .card-label {
-            padding: 10px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            text-align: center;
-            color: #212529;
-            background: #f8f9fa;
+        /* Smooth Animations */
+        @keyframes popUp {
+            from { transform: translate(-50%, 20px); opacity: 0; }
+            to { transform: translate(-50%, 0); opacity: 1; }
         }
         
-        .card.active .card-label {
-            background: #0d6efd;
-            color: white;
+        .toast-enter {
+            animation: popUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
         }
-
-        /* --- 4. OUTPUT BOX --- */
-        .result-section {
-            background: #212529;
-            padding: 30px;
-            color: white;
-            position: sticky;
-            bottom: 0;
-            z-index: 100;
-            border-top: 4px solid #0d6efd;
-        }
-
-        textarea {
-            width: 100%; height: 100px;
-            background: #343a40; border: 1px solid #495057;
-            color: #00ff9d; padding: 15px;
-            border-radius: 6px; font-family: monospace;
-            resize: none; font-size: 0.95rem;
-        }
-
-        .btn-copy {
-            width: 100%; margin-top: 10px; padding: 12px;
-            background: #0d6efd; color: white; border: none;
-            border-radius: 6px; font-weight: 700; cursor: pointer;
-            text-transform: uppercase;
-        }
-        .btn-copy:hover { background: #0b5ed7; }
-
     </style>
 </head>
-<body>
+<body class="bg-industrial-900 text-industrial-100 font-sans antialiased pb-48">
 
-<div class="container">
-    
-    <div class="profile-section">
-        <div class="avatar-box">
-            <img src="https://via.placeholder.com/150" alt="Profile">
-        </div>
-        <div class="user-name">Visual Prompt Master</div>
-        <div class="user-desc">Klik gambar untuk menyusun prompt realistis.</div>
-    </div>
-
-    <div class="library-area">
-
-        <div class="section-title">1. Subject Base</div>
-        <div class="visual-grid" id="group1">
-            <div class="card" onclick="select(1, 'A beautiful young woman')">
-                <div class="card-img">
-                    <img src="https://via.placeholder.com/200?text=Woman" alt="Woman">
+    <!-- Header Profil -->
+    <header class="bg-industrial-900/90 backdrop-blur-md border-b border-industrial-600 sticky top-0 z-30 transition-all">
+        <div class="max-w-2xl mx-auto px-5 py-5 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <div class="relative group">
+                    <!-- Profile Pic -->
+                    <div class="h-11 w-11 rounded-full bg-industrial-700 flex items-center justify-center border border-industrial-600 overflow-hidden">
+                        <img src="https://via.placeholder.com/150/333/ccc?text=USR" alt="Profile" class="h-full w-full object-cover grayscale opacity-80">
+                    </div>
+                    <!-- Status Dot -->
+                    <div class="absolute bottom-0 right-0 w-3 h-3 bg-acid-400 rounded-full border-2 border-industrial-900"></div>
                 </div>
-                <div class="card-label">Young Woman</div>
+                <div class="flex flex-col">
+                    <h1 class="font-display font-bold text-lg text-white leading-none tracking-tight">PROMPT_ENGINE</h1>
+                    <span class="text-[10px] text-industrial-500 font-mono tracking-widest mt-1">BUILD v2.1 // GREY</span>
+                </div>
             </div>
-            <div class="card" onclick="select(1, 'A handsome athletic man')">
-                <div class="card-img"><img src="https://via.placeholder.com/200?text=Man" alt="Man"></div>
-                <div class="card-label">Athletic Man</div>
-            </div>
-            <div class="card" onclick="select(1, 'A futuristic cyborg')">
-                <div class="card-img"><img src="https://via.placeholder.com/200?text=Cyborg" alt="Cyborg"></div>
-                <div class="card-label">Cyborg</div>
-            </div>
-             <div class="card" onclick="select(1, 'An old wise person')">
-                <div class="card-img"><img src="https://via.placeholder.com/200?text=Old" alt="Old"></div>
-                <div class="card-label">Elderly Person</div>
+            <!-- Badge -->
+            <div class="px-3 py-1 bg-industrial-800 border border-industrial-600 rounded-md shadow-sm">
+                <span class="text-[10px] font-bold text-industrial-100 font-mono tracking-wide flex items-center gap-2">
+                    SYSTEM READY
+                </span>
             </div>
         </div>
+    </header>
 
-        <div class="section-title">2. Ethnicity</div>
-        <div class="visual-grid" id="group2">
-            <div class="card" onclick="select(2, 'Scandinavian ethnicity')">
-                <div class="card-img"><img src="https://via.placeholder.com/200?text=Scan" alt="Scan"></div>
-                <div class="card-label">Scandinavian</div>
-            </div>
-            <div class="card" onclick="select(2, 'Japanese ethnicity')">
-                <div class="card-img"><img src="https://via.placeholder.com/200?text=Japan" alt="Japan"></div>
-                <div class="card-label">Japanese</div>
-            </div>
-            <div class="card" onclick="select(2, 'African ethnicity')">
-                <div class="card-img"><img src="https://via.placeholder.com/200?text=Africa" alt="Africa"></div>
-                <div class="card-label">African</div>
-            </div>
-            <div class="card" onclick="select(2, 'Indonesian ethnicity')">
-                <div class="card-img"><img src="https://via.placeholder.com/200?text=Indo" alt="Indo"></div>
-                <div class="card-label">Indonesian</div>
+    <!-- Main Container -->
+    <main id="app-container" class="max-w-2xl mx-auto pt-8 px-0 md:px-5">
+        <!-- Content injected by JS -->
+    </main>
+
+    <!-- Sticky Footer Output -->
+    <div class="fixed bottom-6 left-4 right-4 md:left-1/2 md:right-auto md:w-[42rem] md:-translate-x-1/2 z-40">
+        <div class="bg-industrial-800/95 backdrop-blur-xl border border-industrial-600 rounded-xl p-4 shadow-floating relative overflow-hidden group">
+            
+            <div class="flex flex-col gap-3">
+                <div class="relative">
+                    <div class="flex justify-between items-baseline mb-2">
+                        <label class="text-[10px] font-bold text-industrial-500 font-mono uppercase tracking-widest">Constructed Prompt</label>
+                        <span id="step-counter" class="text-[10px] text-acid-400 font-mono bg-acid-900 px-2 py-0.5 rounded">0/20 SET</span>
+                    </div>
+                    
+                    <!-- Textarea dengan background Industrial Grey -->
+                    <textarea id="output-prompt" readonly class="w-full bg-industrial-900 border border-industrial-600 rounded-lg p-3 text-xs md:text-sm text-gray-300 focus:text-acid-400 focus:border-acid-400 focus:bg-industrial-900 outline-none h-20 resize-none font-mono tracking-tight placeholder-industrial-600 transition-all" placeholder=">> Select elements to initialize generation..."></textarea>
+                </div>
+                
+                <button onclick="copyToClipboard()" class="group w-full bg-industrial-100 hover:bg-acid-400 hover:border-acid-400 border border-transparent text-industrial-900 font-display font-bold text-sm uppercase tracking-wider py-3.5 px-4 rounded-lg transition-all duration-200 ease-out flex justify-center items-center gap-2 shadow-lg">
+                    <span class="relative z-10 flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                        </svg>
+                        Copy Output
+                    </span>
+                </button>
             </div>
         </div>
-
-        <div class="section-title">3. Hairstyle</div>
-        <div class="visual-grid" id="group3">
-            <div class="card" onclick="select(3, 'long wavy hair')">
-                <div class="card-img"><img src="https://via.placeholder.com/200?text=Wavy" alt="Wavy"></div>
-                <div class="card-label">Long Wavy</div>
-            </div>
-            <div class="card" onclick="select(3, 'curly ringlets hair')">
-                <div class="card-img"><img src="https://via.placeholder.com/200?text=Curly" alt="Curly"></div>
-                <div class="card-label">Curly Ringlets</div>
-            </div>
-            <div class="card" onclick="select(3, 'pixie cut')">
-                <div class="card-img"><img src="https://via.placeholder.com/200?text=Pixie" alt="Pixie"></div>
-                <div class="card-label">Pixie Cut</div>
-            </div>
-            <div class="card" onclick="select(3, 'braided hair')">
-                <div class="card-img"><img src="https://via.placeholder.com/200?text=Braid" alt="Braid"></div>
-                <div class="card-label">Braided</div>
-            </div>
-        </div>
-
-        <div class="section-title">4. Skin Texture (Realism)</div>
-        <div class="visual-grid" id="group4">
-            <div class="card" onclick="select(4, 'visible pores, micro-details')">
-                <div class="card-img"><img src="https://via.placeholder.com/200?text=Pores" alt="Pores"></div>
-                <div class="card-label">Visible Pores</div>
-            </div>
-            <div class="card" onclick="select(4, 'freckles on face')">
-                <div class="card-img"><img src="https://via.placeholder.com/200?text=Freckles" alt="Freckles"></div>
-                <div class="card-label">Freckles</div>
-            </div>
-            <div class="card" onclick="select(4, 'glistening sweaty skin')">
-                <div class="card-img"><img src="https://via.placeholder.com/200?text=Sweat" alt="Sweat"></div>
-                <div class="card-label">Sweaty Skin</div>
-            </div>
-            <div class="card" onclick="select(4, 'acne scars, textured skin')">
-                <div class="card-img"><img src="https://via.placeholder.com/200?text=Scars" alt="Scars"></div>
-                <div class="card-label">Acne Scars</div>
-            </div>
-        </div>
-
-        <div class="section-title">5. Camera Type</div>
-        <div class="visual-grid" id="group5">
-            <div class="card" onclick="select(5, 'shot on iPhone 15 Pro')">
-                <div class="card-img"><img src="https://via.placeholder.com/200?text=iPhone" alt="iPhone"></div>
-                <div class="card-label">iPhone 15 Pro</div>
-            </div>
-            <div class="card" onclick="select(5, 'shot on Sony A7R V')">
-                <div class="card-img"><img src="https://via.placeholder.com/200?text=Sony" alt="Sony"></div>
-                <div class="card-label">Sony A7R V</div>
-            </div>
-            <div class="card" onclick="select(5, 'GoPro footage')">
-                <div class="card-img"><img src="https://via.placeholder.com/200?text=GoPro" alt="GoPro"></div>
-                <div class="card-label">GoPro</div>
-            </div>
-             <div class="card" onclick="select(5, 'CCTV footage')">
-                <div class="card-img"><img src="https://via.placeholder.com/200?text=CCTV" alt="CCTV"></div>
-                <div class="card-label">CCTV Footage</div>
-            </div>
-        </div>
-
-        <div class="section-title">6. Lens</div>
-        <div class="visual-grid" id="group6">
-            <div class="card" onclick="select(6, 'macro lens, extreme close-up')">
-                <div class="card-img"><img src="https://via.placeholder.com/200?text=Macro" alt="Macro"></div>
-                <div class="card-label">Macro Lens</div>
-            </div>
-            <div class="card" onclick="select(6, '16mm wide angle lens')">
-                <div class="card-img"><img src="https://via.placeholder.com/200?text=Wide" alt="Wide"></div>
-                <div class="card-label">16mm Wide Angle</div>
-            </div>
-            <div class="card" onclick="select(6, '85mm portrait lens, bokeh')">
-                <div class="card-img"><img src="https://via.placeholder.com/200?text=85mm" alt="85mm"></div>
-                <div class="card-label">85mm Portrait</div>
-            </div>
-             <div class="card" onclick="select(6, 'fish-eye lens')">
-                <div class="card-img"><img src="https://via.placeholder.com/200?text=Fisheye" alt="Fisheye"></div>
-                <div class="card-label">Fish-eye Lens</div>
-            </div>
-        </div>
-
-        <div class="section-title">7. Lighting</div>
-        <div class="visual-grid" id="group7">
-            <div class="card" onclick="select(7, 'golden hour lighting')">
-                <div class="card-img"><img src="https://via.placeholder.com/200?text=Golden" alt="Golden"></div>
-                <div class="card-label">Golden Hour</div>
-            </div>
-            <div class="card" onclick="select(7, 'neon cyberpunk lighting')">
-                <div class="card-img"><img src="https://via.placeholder.com/200?text=Neon" alt="Neon"></div>
-                <div class="card-label">Neon Lighting</div>
-            </div>
-            <div class="card" onclick="select(7, 'Rembrandt lighting')">
-                <div class="card-img"><img src="https://via.placeholder.com/200?text=Rembrandt" alt="Rembrandt"></div>
-                <div class="card-label">Rembrandt</div>
-            </div>
-            <div class="card" onclick="select(7, 'soft window light')">
-                <div class="card-img"><img src="https://via.placeholder.com/200?text=Soft" alt="Soft"></div>
-                <div class="card-label">Soft Window Light</div>
-            </div>
-        </div>
-
-         <div class="section-title">8. Camera Angle</div>
-         <div class="visual-grid" id="group8">
-             <div class="card" onclick="select(8, 'low angle shot')">
-                 <div class="card-img"><img src="https://via.placeholder.com/200?text=Low" alt="Low"></div>
-                 <div class="card-label">Low Angle</div>
-             </div>
-             <div class="card" onclick="select(8, 'high angle shot')">
-                 <div class="card-img"><img src="https://via.placeholder.com/200?text=High" alt="High"></div>
-                 <div class="card-label">High Angle</div>
-             </div>
-             <div class="card" onclick="select(8, 'drone view')">
-                 <div class="card-img"><img src="https://via.placeholder.com/200?text=Drone" alt="Drone"></div>
-                 <div class="card-label">Drone View</div>
-             </div>
-             <div class="card" onclick="select(8, 'selfie angle')">
-                <div class="card-img"><img src="https://via.placeholder.com/200?text=Selfie" alt="Selfie"></div>
-                <div class="card-label">Selfie Angle</div>
-            </div>
-         </div>
-
     </div>
 
-    <div class="result-section">
-        <div style="margin-bottom:10px; font-weight:bold; color:#ccc;">GENERATED PROMPT:</div>
-        <textarea id="output" readonly placeholder="Klik gambar di atas untuk menyusun prompt..."></textarea>
-        <button class="btn-copy" onclick="copyPrompt()">SALIN PROMPT</button>
+    <!-- Toast Notification -->
+    <div id="copy-toast" class="fixed top-24 left-1/2 transform -translate-x-1/2 bg-industrial-100 text-industrial-900 border-2 border-acid-400 px-6 py-3 rounded-lg shadow-floating z-50 hidden flex items-center gap-3 font-bold font-display text-sm tracking-wide">
+        <div class="w-3 h-3 bg-acid-400 rounded-full animate-pulse"></div>
+        COPIED TO CLIPBOARD
     </div>
 
-</div>
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // --- DATA STRUCTURE ---
+        // (Sama seperti sebelumnya)
+        const categories = [
+            {
+                id: 1, title: "RAS & ETNIS", options: [
+                    { val: "Scandinavian", sub: "Putih, mata biru" },
+                    { val: "Mediterranean", sub: "Kulit olive, Italia" },
+                    { val: "East Asian", sub: "Cina/Jepang/Korea" },
+                    { val: "Southeast Asian", sub: "Indonesia/Thai" },
+                    { val: "African / Nubian", sub: "Kulit hitam pekat" },
+                    { val: "Latina", sub: "Eksotis, kulit tan" },
+                    { val: "Indian", sub: "Asia Selatan" }
+                ]
+            },
+            {
+                id: 2, title: "TIPE TUBUH", options: [
+                    { val: "Skinny / Slender", sub: "Kurus Ramping" },
+                    { val: "Athletic / Fit", sub: "Atletis Bugar" },
+                    { val: "Muscular", sub: "Berotot Besar" },
+                    { val: "Curvy / Hourglass", sub: "Berisi/Bahenol" },
+                    { val: "Plus Size", sub: "Gemuk" },
+                    { val: "Average Body", sub: "Tubuh Rata-rata" }
+                ]
+            },
+            {
+                id: 3, title: "GAYA RAMBUT", options: [
+                    { val: "Straight hair", sub: "Lurus" },
+                    { val: "Wavy hair", sub: "Berombak" },
+                    { val: "Curly hair", sub: "Keriting" },
+                    { val: "Afro hair", sub: "Kribo" },
+                    { val: "Braided hair", sub: "Kepang" },
+                    { val: "Dreadlocks", sub: "Gimbal" },
+                    { val: "Buzz cut", sub: "Cepak" },
+                    { val: "Pixie cut", sub: "Pendek Wanita" },
+                    { val: "Bob cut", sub: "Bob Poni" },
+                    { val: "Messy bun", sub: "Sanggul Acak" },
+                    { val: "Wet look hair", sub: "Basah Klimis" }
+                ]
+            },
+            {
+                id: 4, title: "WARNA RAMBUT", options: [
+                    { val: "Platinum Blonde", sub: "Pirang Platinum" },
+                    { val: "Strawberry Blonde", sub: "Pirang Kemerahan" },
+                    { val: "Brunette", sub: "Coklat Tua" },
+                    { val: "Jet Black", sub: "Hitam Pekat" },
+                    { val: "Redhead", sub: "Merah Alami" },
+                    { val: "Ombre hair", sub: "Gradasi" },
+                    { val: "Pastel Pink", sub: "Merah Muda" },
+                    { val: "Silver / Grey", sub: "Perak/Uban" }
+                ]
+            },
+            {
+                id: 5, title: "DETAIL WAJAH", options: [
+                    { val: "Visible pores", sub: "Pori-pori jelas" },
+                    { val: "Freckles", sub: "Bintik matahari" },
+                    { val: "Acne scars", sub: "Bekas jerawat" },
+                    { val: "Wrinkles", sub: "Kerutan" },
+                    { val: "Rosy cheeks", sub: "Pipi merona" },
+                    { val: "Sweaty skin", sub: "Berkeringat" },
+                    { val: "Vitiligo", sub: "Bercak kulit" },
+                    { val: "Mole", sub: "Tahi lalat" }
+                ]
+            },
+            {
+                id: 6, title: "EKSPRESI", options: [
+                    { val: "Dilated pupils", sub: "Pupil membesar" },
+                    { val: "Heterochromia", sub: "Mata beda warna" },
+                    { val: "Hooded eyes", sub: "Kelopak tertutup" },
+                    { val: "Smirk", sub: "Senyum sinis" },
+                    { val: "Looking at camera", sub: "Tatap kamera" },
+                    { val: "Thousand-yard stare", sub: "Tatapan kosong" }
+                ]
+            },
+            {
+                id: 7, title: "OUTFIT STYLE", options: [
+                    { val: "Plain white tee", sub: "Kaos Putih" },
+                    { val: "Oversized hoodie", sub: "Hoodie Besar" },
+                    { val: "Flannel shirt", sub: "Kemeja Flanel" },
+                    { val: "Knitted sweater", sub: "Sweater Rajut" },
+                    { val: "Floral dress", sub: "Gaun Bunga" },
+                    { val: "Denim jacket", sub: "Jaket Denim" },
+                    { val: "Techwear jacket", sub: "Jaket Techwear" },
+                    { val: "Bomber jacket", sub: "Jaket Bomber" },
+                    { val: "Puffer jacket", sub: "Jaket Tebal" },
+                    { val: "Graphic tee", sub: "Kaos Grafis" },
+                    { val: "Tracksuit", sub: "Set Olahraga" },
+                    { val: "Streetwear", sub: "Streetwear" },
+                    { val: "Silk gown", sub: "Gaun Sutra" },
+                    { val: "Black tuxedo", sub: "Tuksedo" },
+                    { val: "Cocktail dress", sub: "Gaun Pesta" },
+                    { val: "Three-piece suit", sub: "Setelan Jas" },
+                    { val: "Office attire", sub: "Kantoran" },
+                    { val: "Turtleneck", sub: "Turtleneck" },
+                    { val: "Trench coat", sub: "Mantel Panjang" },
+                    { val: "Kimono", sub: "Kimono" },
+                    { val: "Kebaya", sub: "Kebaya" },
+                    { val: "Cheongsam", sub: "Cheongsam" },
+                    { val: "Saree", sub: "Sari India" },
+                    { val: "Hanbok", sub: "Hanbok" },
+                    { val: "Cyberpunk jacket", sub: "Jaket Cyber" },
+                    { val: "Armor", sub: "Baju Zirah" },
+                    { val: "Astronaut suit", sub: "Baju Astronot" },
+                    { val: "Gym outfit", sub: "Baju Gym" },
+                    { val: "Doctor coat", sub: "Jas Dokter" },
+                    { val: "Police uniform", sub: "Seragam Polisi" },
+                    { val: "Military gear", sub: "Militer" },
+                    { val: "School uniform", sub: "Seragam Sekolah" }
+                ]
+            },
+            {
+                id: 8, title: "BAHAN (FABRIC)", options: [
+                    { val: "Cotton", sub: "Katun" },
+                    { val: "Silk", sub: "Sutra" },
+                    { val: "Denim", sub: "Jeans" },
+                    { val: "Leather", sub: "Kulit" },
+                    { val: "Latex", sub: "Karet/Lateks" },
+                    { val: "Wool", sub: "Wol" },
+                    { val: "Sheer", sub: "Transparan" },
+                    { val: "Velvet", sub: "Beludru" }
+                ]
+            },
+            {
+                id: 9, title: "KONDISI", options: [
+                    { val: "Perfectly ironed", sub: "Rapi licin" },
+                    { val: "Wrinkled", sub: "Kusut" },
+                    { val: "Soaked", sub: "Basah kuyup" },
+                    { val: "Grimy", sub: "Kotor" },
+                    { val: "Windblown", sub: "Tertiup angin" }
+                ]
+            },
+            {
+                id: 10, title: "LOKASI", options: [
+                    { val: "Tokyo Night", sub: "Tokyo Malam" },
+                    { val: "Coffee Shop", sub: "Kedai Kopi" },
+                    { val: "White Studio", sub: "Studio Putih" },
+                    { val: "Forest", sub: "Hutan" },
+                    { val: "Penthouse", sub: "Apartemen" },
+                    { val: "Ruins", sub: "Reruntuhan" },
+                    { val: "Beach Sunset", sub: "Pantai" },
+                    { val: "Bedroom", sub: "Kamar Tidur" }
+                ]
+            },
+            {
+                id: 11, title: "CUACA", options: [
+                    { val: "Sunny", sub: "Cerah" },
+                    { val: "Rainy", sub: "Hujan" },
+                    { val: "Foggy", sub: "Berkabut" },
+                    { val: "Snowing", sub: "Salju" },
+                    { val: "Windy", sub: "Berangin" }
+                ]
+            },
+            {
+                id: 12, title: "KAMERA", options: [
+                    { val: "iPhone 15 Pro", sub: "HP High-End" },
+                    { val: "Sony A7R V", sub: "Mirrorless" },
+                    { val: "Fujifilm GFX", sub: "Medium Format" },
+                    { val: "Polaroid", sub: "Instan" },
+                    { val: "GoPro", sub: "Action Cam" },
+                    { val: "CCTV", sub: "CCTV" },
+                    { val: "Drone", sub: "Drone" },
+                    { val: "Disposable", sub: "Kamera Mainan" }
+                ]
+            },
+            {
+                id: 13, title: "LENSA", options: [
+                    { val: "Macro", sub: "Makro" },
+                    { val: "16mm Wide", sub: "Lebar" },
+                    { val: "35mm", sub: "Street" },
+                    { val: "50mm", sub: "Standar" },
+                    { val: "85mm", sub: "Portrait" },
+                    { val: "200mm", sub: "Telephoto" }
+                ]
+            },
+            {
+                id: 14, title: "FILM LOOK", options: [
+                    { val: "Kodak Portra 400", sub: "Skin Tone" },
+                    { val: "Kodak Gold 200", sub: "Warm" },
+                    { val: "Fujifilm Velvia", sub: "Vibrant" },
+                    { val: "Ilford HP5", sub: "BW Grain" },
+                    { val: "VHS Glitch", sub: "Rusak" }
+                ]
+            },
+            {
+                id: 15, title: "ANGLE", options: [
+                    { val: "Eye-level", sub: "Sejajar" },
+                    { val: "Low angle", sub: "Dari Bawah" },
+                    { val: "High angle", sub: "Dari Atas" },
+                    { val: "Bird's eye", sub: "Atas Tegak" },
+                    { val: "Dutch angle", sub: "Miring" },
+                    { val: "Selfie", sub: "Selfie" },
+                    { val: "Over-shoulder", sub: "Lewat Bahu" }
+                ]
+            },
+            {
+                id: 16, title: "FRAMING", options: [
+                    { val: "Extreme Close-up", sub: "Detail Makro" },
+                    { val: "Close-up", sub: "Wajah" },
+                    { val: "Medium shot", sub: "Setengah Badan" },
+                    { val: "Full body", sub: "Seluruh Badan" },
+                    { val: "Wide shot", sub: "Pemandangan" }
+                ]
+            },
+            {
+                id: 17, title: "CAHAYA ALAM", options: [
+                    { val: "Golden Hour", sub: "Sore Emas" },
+                    { val: "Blue Hour", sub: "Subuh Biru" },
+                    { val: "Hard Sun", sub: "Terik" },
+                    { val: "Overcast", sub: "Mendung" },
+                    { val: "Moonlight", sub: "Bulan" }
+                ]
+            },
+            {
+                id: 18, title: "STUDIO LIGHT", options: [
+                    { val: "Rembrandt", sub: "Klasik" },
+                    { val: "Butterfly", sub: "Glamour" },
+                    { val: "Rim Light", sub: "Backlight" },
+                    { val: "Silhouette", sub: "Siluet" },
+                    { val: "God Rays", sub: "Berkas Cahaya" },
+                    { val: "Neon", sub: "Neon" }
+                ]
+            },
+            {
+                id: 19, title: "RASIO", options: [
+                    { val: "--ar 9:16", sub: "Story" },
+                    { val: "--ar 4:5", sub: "Feed" },
+                    { val: "--ar 1:1", sub: "Square" },
+                    { val: "--ar 16:9", sub: "Landscape" }
+                ]
+            },
+            {
+                id: 20, title: "QUALITY", options: [
+                    { val: "Photorealistic", sub: "Nyata" },
+                    { val: "Hyper-detailed", sub: "Detail" },
+                    { val: "Raw Style", sub: "Mentah" },
+                    { val: "Cinematic", sub: "Film" },
+                    { val: "Vintage", sub: "Jadul" }
+                ]
+            }
+        ];
 
-<script>
-    // Kita punya 8 Kategori
-    let promptParts = new Array(8).fill("");
+        // --- STATE MANAGEMENT ---
+        const userSelections = new Array(20).fill(null);
 
-    function select(groupIndex, promptText) {
-        // 1. VISUAL: Ganti warna border biru
-        const group = document.getElementById('group' + groupIndex);
-        const cards = group.getElementsByClassName('card');
-        
-        // Reset semua kartu di grup ini
-        for (let c of cards) { c.classList.remove('active'); }
-        
-        // Aktifkan kartu yang diklik
-        event.currentTarget.classList.add('active');
+        // --- INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', () => {
+            renderApp();
+            updateOutput();
+        });
 
-        // 2. LOGIC: Simpan text prompt
-        promptParts[groupIndex - 1] = promptText;
+        // --- RENDER FUNCTION ---
+        function renderApp() {
+            const container = document.getElementById('app-container');
+            
+            categories.forEach((category, index) => {
+                const section = document.createElement('section');
+                section.className = "mb-10 pl-5 md:pl-0";
 
-        // 3. RENDER
-        generate();
-    }
+                const title = document.createElement('h2');
+                title.className = "font-display text-xs font-bold text-industrial-500 uppercase tracking-widest mb-4 flex items-center gap-2";
+                title.innerHTML = `<span class="text-acid-400 bg-industrial-800 px-1 rounded border border-industrial-600">0${index + 1}</span> ${category.title}`;
+                section.appendChild(title);
 
-    function generate() {
-        // Gabungkan semua yang dipilih
-        const cleanParts = promptParts.filter(p => p !== "");
-        let final = cleanParts.join(", ");
+                const scrollWrapper = document.createElement('div');
+                scrollWrapper.className = "flex overflow-x-auto gap-3 pb-4 hide-scrollbar scrolling-wrapper -ml-5 px-5 md:ml-0 md:px-0";
+                
+                category.options.forEach(option => {
+                    const card = document.createElement('div');
+                    // INDUSTRIAL GREY CARD
+                    card.className = `
+                        relative flex-shrink-0 w-[135px] bg-industrial-800 rounded-lg border border-industrial-600 
+                        p-2.5 cursor-pointer transition-all duration-200 card-snap no-select group hover:border-industrial-500
+                        category-${index}
+                    `;
+                    card.dataset.value = option.val;
+                    card.dataset.categoryIndex = index;
+                    card.onclick = () => selectOption(index, option.val, card);
 
-        // Tambah bumbu wajib di akhir
-        if(final) {
-            final += ", highly detailed, realistic texture, 8k, sharp focus --ar 9:16 --v 6.0";
+                    card.innerHTML = `
+                        <!-- Active Indicator Stripe -->
+                        <div class="selection-stripe absolute top-0 left-0 w-full h-1 bg-acid-400 opacity-0 transition-opacity rounded-t-lg shadow-[0_2px_10px_rgba(204,255,0,0.5)]"></div>
+                        
+                        <div class="aspect-square bg-industrial-900 rounded-md mb-3 overflow-hidden relative border border-industrial-600/50">
+                             <img src="https://via.placeholder.com/150x150/25262b/9ca3af?text=${option.val.charAt(0)}" 
+                                  class="w-full h-full object-cover opacity-60 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500 grayscale group-hover:grayscale-0" 
+                                  alt="${option.val}"
+                                  loading="lazy">
+                        </div>
+                        <h3 class="font-sans text-sm font-semibold text-industrial-100 leading-tight mb-1 group-hover:text-white transition-colors tracking-tight">${option.val}</h3>
+                        <p class="text-[10px] text-industrial-500 font-mono leading-tight tracking-tight">${option.sub}</p>
+                    `;
+                    
+                    scrollWrapper.appendChild(card);
+                });
+
+                const spacer = document.createElement('div');
+                spacer.className = "w-2 flex-shrink-0";
+                scrollWrapper.appendChild(spacer);
+
+                section.appendChild(scrollWrapper);
+                container.appendChild(section);
+            });
         }
 
-        document.getElementById('output').value = final;
-    }
+        // --- LOGIC HANDLING ---
+        function selectOption(categoryIndex, value, clickedCard) {
+            userSelections[categoryIndex] = value;
 
-    function copyPrompt() {
-        const txt = document.getElementById('output');
-        if(!txt.value) { alert("Pilih gambar dulu!"); return; }
-        txt.select();
-        document.execCommand('copy');
-        alert("Prompt tersalin!");
-    }
-</script>
+            const siblings = document.querySelectorAll(`.category-${categoryIndex}`);
+            
+            // RESET SIBLINGS (Grey State)
+            siblings.forEach(el => {
+                el.classList.remove('border-acid-400', 'bg-industrial-700', 'shadow-md');
+                el.classList.add('bg-industrial-800', 'border-industrial-600');
+                el.querySelector('.selection-stripe').classList.add('opacity-0');
+                
+                const title = el.querySelector('h3');
+                title.classList.remove('text-acid-400');
+                title.classList.add('text-industrial-100');
+            });
 
+            // ACTIVATE SELECTED (Industrial Active)
+            clickedCard.classList.remove('bg-industrial-800', 'border-industrial-600');
+            clickedCard.classList.add('bg-industrial-700', 'border-acid-400');
+            clickedCard.querySelector('.selection-stripe').classList.remove('opacity-0');
+            
+            const activeTitle = clickedCard.querySelector('h3');
+            activeTitle.classList.remove('text-industrial-100');
+            activeTitle.classList.add('text-acid-400');
+
+            updateOutput();
+        }
+
+        function updateOutput() {
+            const validSelections = userSelections.filter(item => item !== null && item !== "");
+            let promptString = validSelections.join(", ");
+
+            if (promptString.length > 0) {
+                promptString += " --v 6.0 --style raw";
+            }
+
+            document.getElementById('output-prompt').value = promptString;
+            
+            // Update counter UI
+            document.getElementById('step-counter').innerText = `${validSelections.length}/20 SET`;
+        }
+
+        function copyToClipboard() {
+            const textarea = document.getElementById('output-prompt');
+            if(!textarea.value) return;
+
+            textarea.select();
+            textarea.setSelectionRange(0, 99999);
+            
+            navigator.clipboard.writeText(textarea.value).then(() => {
+                showToast();
+            });
+        }
+
+        function showToast() {
+            const toast = document.getElementById('copy-toast');
+            toast.classList.remove('hidden');
+            toast.classList.add('toast-enter');
+            
+            setTimeout(() => {
+                toast.classList.remove('toast-enter');
+                toast.classList.add('hidden');
+            }, 2500);
+        }
+    </script>
 </body>
-                                          </html>
+</html>
